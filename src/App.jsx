@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Navbar from './components/Navbar';
-import SponsorBar from './components/SponsorBar';
-import ViewSwitcher from './components/ViewSwitcher';
-import HeroBanner from './components/HeroBanner';
-import TreasuryOverview from './components/TreasuryOverview';
+import React, { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
+import DashboardOverview from './components/DashboardOverview';
 import NegotiationArena from './components/NegotiationArena';
 import EscrowTimeline from './components/EscrowTimeline';
 import ThemisArbiter from './components/ThemisArbiter';
@@ -111,7 +109,7 @@ export default function App() {
         particleCount: 70,
         spread: 60,
         origin: { y: 0.6 },
-        colors: ['#10B981', '#0079C1', '#00B8D9']
+        colors: ['#10B981', '#0070BA', '#38BDF8']
       });
 
       alert(`Milestone Payout Dispatched via PayPal Payouts v1! Batch ID: ${res.batch_header?.payout_batch_id || 'PO-BATCH-RELEASED'}`);
@@ -254,114 +252,146 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col font-sans">
-      {/* Top Navigation */}
-      <Navbar
-        treasury={treasury}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-        onOpenDocs={() => setIsDocsOpen(true)}
+    <div className="min-h-screen bg-[#080C16] text-slate-100 flex font-sans antialiased">
+      {/* Sleek Left Sidebar */}
+      <Sidebar
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
         emergencyFreeze={emergencyFreeze}
         onToggleFreeze={handleToggleFreeze}
-        onRefresh={loadInitialData}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenDocs={() => setIsDocsOpen(true)}
+        treasury={treasury}
       />
 
-      {/* Sponsor Ecosystem Bar */}
-      <SponsorBar activeTab={activeTab} onSelectTab={setActiveTab} />
+      {/* Main Workspace Column */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        {/* Workspace Top Header */}
+        <Header
+          activeTab={activeTab}
+          selectedScenario={selectedScenario}
+          onSelectScenario={handleSelectScenario}
+          onRunNegotiation={() => handleRunNegotiation()}
+          isNegotiating={isNegotiating}
+          onRefresh={loadInitialData}
+          treasury={treasury}
+        />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-4">
-        {/* Global Treasury Overview */}
-        <TreasuryOverview treasury={treasury} />
-
-        {/* View Switcher Tabs */}
-        <ViewSwitcher activeTab={activeTab} onSelectTab={setActiveTab} />
-
-        {/* TAB 1: Core Escrow & Multi-Agent Commerce */}
-        {activeTab === 'escrow' && (
-          <>
-            <HeroBanner
-              selectedScenario={selectedScenario}
-              onSelectScenario={handleSelectScenario}
-              onRunNegotiation={() => handleRunNegotiation()}
-              isNegotiating={isNegotiating}
-              onScrollToGrid={() => setActiveTab('grid')}
-            />
-
-            <NegotiationArena
+        {/* View Content Body */}
+        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {/* TAB 1: Core Dashboard & Escrow */}
+          {activeTab === 'escrow' && (
+            <DashboardOverview
+              treasury={treasury}
               contract={contract}
+              deliverables={deliverables}
               isNegotiating={isNegotiating}
               onRunNegotiation={() => handleRunNegotiation()}
-              onProceedToEscrow={() => document.getElementById('escrow-section')?.scrollIntoView({ behavior: 'smooth' })}
-            />
-
-            {contract && (
-              <EscrowTimeline
-                contract={contract}
-                deliverables={deliverables}
-                onVerifyMilestone={handleVerifyMilestone}
-                onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
-                isOrderCaptured={isOrderCaptured}
-                onEscalateToArbitration={() => document.getElementById('themis-section')?.scrollIntoView({ behavior: 'smooth' })}
-              />
-            )}
-
-            <ThemisArbiter
-              contract={contract}
+              onVerifyMilestone={handleVerifyMilestone}
+              onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
+              isOrderCaptured={isOrderCaptured}
+              onEscalateToArbitration={() => {
+                setActiveTab('themis');
+              }}
               disputeData={disputeData}
               onRunArbitration={handleRunArbitration}
               arbitrationRuling={arbitrationRuling}
               isArbitrating={isArbitrating}
-            />
-
-            <AgentTelemetryGrid
               transactions={transactions}
               onRowAction={handleRowAction}
+              onNavigateToTab={setActiveTab}
             />
-          </>
-        )}
+          )}
 
-        {/* TAB 2: AG Grid Fleet Telemetry */}
-        {activeTab === 'grid' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between text-xs font-mono text-amber-300">
-              <span>AG Grid Community & Enterprise v36 Active</span>
-              <span>Sub-Millisecond Sorting & Filtering Enabled</span>
+          {/* TAB 2: Focused Multi-Agent Negotiation Arena */}
+          {activeTab === 'negotiation' && (
+            <div className="space-y-5 animate-fade-in">
+              <NegotiationArena
+                contract={contract}
+                isNegotiating={isNegotiating}
+                onRunNegotiation={() => handleRunNegotiation()}
+                onProceedToEscrow={() => setActiveTab('escrow')}
+              />
             </div>
-            <AgentTelemetryGrid
-              transactions={transactions}
-              onRowAction={handleRowAction}
-            />
-          </div>
-        )}
+          )}
 
-        {/* TAB 3: Bryntum Milestone Gantt */}
-        {activeTab === 'bryntum' && (
-          <div className="animate-fade-in">
-            <BryntumGanttView onTriggerMilestonePayout={handleBryntumPayout} />
-          </div>
-        )}
+          {/* TAB 3: Focused Themis AI Arbitration Court */}
+          {activeTab === 'themis' && (
+            <div className="space-y-5 animate-fade-in">
+              <ThemisArbiter
+                contract={contract}
+                disputeData={disputeData || {
+                  milestoneIndex: 2,
+                  reason: 'SLA Latency Violation: 184.2ms exceeded 35ms ceiling (Contract clause 4.2)'
+                }}
+                onRunArbitration={handleRunArbitration}
+                arbitrationRuling={arbitrationRuling}
+                isArbitrating={isArbitrating}
+              />
+            </div>
+          )}
 
-        {/* TAB 4: Channel3 Commerce Catalog */}
-        {activeTab === 'channel3' && (
-          <div className="animate-fade-in">
-            <Channel3Catalog onDispatchRfq={handleDispatchChannel3Rfq} />
-          </div>
-        )}
+          {/* TAB 4: AG Grid Fleet Telemetry */}
+          {activeTab === 'grid' && (
+            <div className="space-y-4 animate-fade-in">
+              <AgentTelemetryGrid
+                transactions={transactions}
+                onRowAction={handleRowAction}
+              />
+            </div>
+          )}
 
-        {/* TAB 5: Elastic Intelligence & Logs */}
-        {activeTab === 'elastic' && (
-          <div className="animate-fade-in">
-            <ElasticSearchConsole />
-          </div>
-        )}
+          {/* TAB 5: Bryntum Milestone Gantt */}
+          {activeTab === 'bryntum' && (
+            <div className="animate-fade-in">
+              <BryntumGanttView onTriggerMilestonePayout={handleBryntumPayout} />
+            </div>
+          )}
 
-        {/* TAB 6: Postman & APIMatic DevHub */}
-        {activeTab === 'devhub' && (
-          <div className="animate-fade-in">
-            <PostmanApiRunner />
+          {/* TAB 6: Channel3 Commerce Catalog */}
+          {activeTab === 'channel3' && (
+            <div className="animate-fade-in">
+              <Channel3Catalog onDispatchRfq={handleDispatchChannel3Rfq} />
+            </div>
+          )}
+
+          {/* TAB 7: Elastic Search Intelligence */}
+          {activeTab === 'elastic' && (
+            <div className="animate-fade-in">
+              <ElasticSearchConsole />
+            </div>
+          )}
+
+          {/* TAB 8: Postman & APIMatic DevHub */}
+          {activeTab === 'devhub' && (
+            <div className="animate-fade-in">
+              <PostmanApiRunner />
+            </div>
+          )}
+        </main>
+
+        {/* Minimalist Footer */}
+        <footer className="border-t border-white/[0.04] bg-[#070A12] py-4 px-6 text-xs text-slate-500 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-400">NEXUSPAY</span>
+            <span>•</span>
+            <span>Autonomous Agent Commerce on PayPal Developer Platform</span>
           </div>
-        )}
-      </main>
+          <div className="flex items-center gap-3 text-slate-400">
+            <span>PayPal Orders v2 & Payouts</span>
+            <span>•</span>
+            <span>AG Grid</span>
+            <span>•</span>
+            <span>Bryntum</span>
+            <span>•</span>
+            <span>Channel3</span>
+            <span>•</span>
+            <span>Elastic</span>
+            <span>•</span>
+            <span>Postman</span>
+          </div>
+        </footer>
+      </div>
 
       {/* Modals & Drawers */}
       <PayPalModal
@@ -381,34 +411,6 @@ export default function App() {
         isOpen={isDocsOpen}
         onClose={() => setIsDocsOpen(false)}
       />
-
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-[#080C14] py-8 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-white tracking-wide">NEXUSPAY</span>
-            <span>•</span>
-            <span>Built for the PayPal AI Global Hackathon 2026</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-slate-400">
-            <span>PayPal Developer</span>
-            <span>•</span>
-            <span>AG Grid</span>
-            <span>•</span>
-            <span>Bryntum</span>
-            <span>•</span>
-            <span>Channel3</span>
-            <span>•</span>
-            <span>Elastic</span>
-            <span>•</span>
-            <span>Postman</span>
-            <span>•</span>
-            <span>APIMatic</span>
-            <span>•</span>
-            <span>Render</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
