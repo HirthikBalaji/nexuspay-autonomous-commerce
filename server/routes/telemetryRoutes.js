@@ -1,6 +1,8 @@
 import express from 'express';
+import crypto from 'crypto';
 import { 
   getDbTransactions, 
+  addDbTransaction,
   updateDbTransaction, 
   getDbTreasury, 
   updateDbTreasury 
@@ -14,6 +16,50 @@ router.get('/transactions', (req, res) => {
   res.json({
     total: txns.length,
     transactions: txns
+  });
+});
+
+// POST /api/telemetry/simulate-tick (Inject real-time transaction for live AG Grid streaming)
+router.post('/simulate-tick', (req, res) => {
+  const buyers = ['Atlas-01 (NovaCorp)', 'Vector-02 (DataOps)', 'Krypton-07 (Treasury)', 'Hyperion-03 (Quant)'];
+  const suppliers = ['Hermes-09 (Aetheria)', 'Specter-04 (RedTeam)', 'Chronos-12 (Oracle Feed)', 'DeepCode-02 (DataOps)'];
+  const categories = ['GPU Cluster Compute', 'Autonomous Red-Teaming', 'Real-time Oracle Latency', 'Multimodal Deduplication', 'Edge Route Cache'];
+  const stages = ['Escrow Locked', 'Tranche 1 Released', 'Tranche 2 Released', 'Completed', 'In Arbitration'];
+  const rails = ['PayPal Orders v2', 'PayPal Payouts v1', 'Themis AI Arbiter'];
+
+  const buyer = buyers[Math.floor(Math.random() * buyers.length)];
+  const supplier = suppliers[Math.floor(Math.random() * suppliers.length)];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  const stage = stages[Math.floor(Math.random() * stages.length)];
+  const rail = stage.includes('Arbitration') ? 'Themis AI Arbiter' : stage === 'Completed' ? 'PayPal Payouts v1' : 'PayPal Orders v2';
+  
+  const isAnomaly = Math.random() < 0.15;
+  const riskScore = isAnomaly ? Math.floor(Math.random() * 35) + 65 : Math.floor(Math.random() * 20) + 5;
+  const slaHealth = isAnomaly ? Number((80 + Math.random() * 10).toFixed(1)) : Number((99.2 + Math.random() * 0.79).toFixed(2));
+  const amount = Number((150 + Math.random() * 2350).toFixed(2));
+
+  const newTxn = {
+    id: 'TXN-' + crypto.randomBytes(3).toString('hex').toUpperCase() + '-PP',
+    timestamp: new Date().toISOString(),
+    buyerAgent: buyer,
+    supplierAgent: supplier,
+    category,
+    amount,
+    currency: 'USD',
+    milestoneStage: stage,
+    milestoneProgress: stage === 'Completed' ? 100 : stage.includes('Tranche 2') ? 66 : stage.includes('Tranche 1') ? 33 : 0,
+    riskScore,
+    slaHealth,
+    paypalReference: 'ORD-' + crypto.randomBytes(4).toString('hex').toUpperCase(),
+    agentStatus: isAnomaly ? 'FLAGGED' : 'ACTIVE',
+    settlementRail: rail
+  };
+
+  addDbTransaction(newTxn);
+
+  res.json({
+    success: true,
+    transaction: newTxn
   });
 });
 
