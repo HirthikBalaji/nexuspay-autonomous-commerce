@@ -5,7 +5,10 @@ import {
   verifyAndReleaseMilestone, 
   runThemisArbitration 
 } from '../agentOrchestrator.js';
-import { getDbContracts, getDbContractById } from '../db.js';
+import { getDb, getDbContract } from '../db.js';
+
+const getDbContracts = () => getDb().contracts || [];
+const getDbContractById = (id) => getDbContract(id);
 
 const router = express.Router();
 
