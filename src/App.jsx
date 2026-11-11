@@ -1,19 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
+import SponsorBar from './components/SponsorBar';
+import ViewSwitcher from './components/ViewSwitcher';
 import HeroBanner from './components/HeroBanner';
 import TreasuryOverview from './components/TreasuryOverview';
 import NegotiationArena from './components/NegotiationArena';
 import EscrowTimeline from './components/EscrowTimeline';
 import ThemisArbiter from './components/ThemisArbiter';
 import AgentTelemetryGrid from './components/AgentTelemetryGrid';
+import BryntumGanttView from './components/BryntumGanttView';
+import Channel3Catalog from './components/Channel3Catalog';
+import ElasticSearchConsole from './components/ElasticSearchConsole';
+import PostmanApiRunner from './components/PostmanApiRunner';
 import PayPalModal from './components/PayPalModal';
 import SettingsDrawer from './components/SettingsDrawer';
 import ApiDocsModal from './components/ApiDocsModal';
+import confetti from 'canvas-confetti';
 
 import { agentService } from './services/agentService';
 import { paypalService } from './services/paypalService';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('escrow');
   const [selectedScenario, setSelectedScenario] = useState('gpu_procurement');
   const [contract, setContract] = useState(null);
   const [deliverables, setDeliverables] = useState([]);
@@ -38,7 +46,6 @@ export default function App() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [isPayPalModalOpen, setIsPayPalModalOpen] = useState(false);
 
-  // Initial load
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -59,22 +66,58 @@ export default function App() {
   };
 
   // Launch Multi-Agent Negotiation
-  const handleRunNegotiation = async () => {
+  const handleRunNegotiation = async (customTask = null) => {
     setIsNegotiating(true);
     setDisputeData(null);
     setArbitrationRuling(null);
     setIsOrderCaptured(false);
 
     try {
-      const data = await agentService.negotiate({ scenarioId: selectedScenario });
+      const data = await agentService.negotiate({
+        scenarioId: selectedScenario,
+        customTask: customTask
+      });
       setContract(data);
       setDeliverables(data.deliverables || []);
-      // Auto-secure escrow after negotiation completes
       setIsOrderCaptured(true);
     } catch (err) {
       alert('Negotiation failed: ' + err.message);
     } finally {
       setIsNegotiating(false);
+    }
+  };
+
+  // Channel3 Dispatch: loads item directly into negotiation
+  const handleDispatchChannel3Rfq = (item) => {
+    setActiveTab('escrow');
+    handleRunNegotiation({
+      title: item.name,
+      budget: item.estimatedContractBudget
+    });
+  };
+
+  // Bryntum Milestone Trigger
+  const handleBryntumPayout = async (task) => {
+    try {
+      const res = await paypalService.payoutMilestone({
+        senderBatchId: `BATCH_BRYNTUM_${task.id}`,
+        receiverEmail: 'billing@aetheria-cloud.ai',
+        amount: task.paypalDisbursement,
+        currency: 'USD',
+        note: `Bryntum Scheduler Release: ${task.name}`
+      });
+
+      confetti({
+        particleCount: 70,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#0079C1', '#00B8D9']
+      });
+
+      alert(`Milestone Payout Dispatched via PayPal Payouts v1! Batch ID: ${res.batch_header?.payout_batch_id || 'PO-BATCH-RELEASED'}`);
+      loadInitialData();
+    } catch (err) {
+      alert('Bryntum payout release error: ' + err.message);
     }
   };
 
@@ -131,8 +174,6 @@ export default function App() {
           payoutDetails: res.payoutResult
         };
         setDeliverables(updated);
-
-        // Refresh treasury & telemetry
         loadInitialData();
         return res;
       }
@@ -224,54 +265,102 @@ export default function App() {
         onRefresh={loadInitialData}
       />
 
+      {/* Sponsor Ecosystem Bar */}
+      <SponsorBar activeTab={activeTab} onSelectTab={setActiveTab} />
+
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-4">
-        {/* Hero Banner & Scenario Switcher */}
-        <HeroBanner
-          selectedScenario={selectedScenario}
-          onSelectScenario={handleSelectScenario}
-          onRunNegotiation={handleRunNegotiation}
-          isNegotiating={isNegotiating}
-          onScrollToGrid={() => document.getElementById('telemetry-grid-section')?.scrollIntoView({ behavior: 'smooth' })}
-        />
-
         {/* Global Treasury Overview */}
         <TreasuryOverview treasury={treasury} />
 
-        {/* Multi-Agent Negotiation Arena */}
-        <NegotiationArena
-          contract={contract}
-          isNegotiating={isNegotiating}
-          onRunNegotiation={handleRunNegotiation}
-          onProceedToEscrow={() => document.getElementById('escrow-section')?.scrollIntoView({ behavior: 'smooth' })}
-        />
+        {/* View Switcher Tabs */}
+        <ViewSwitcher activeTab={activeTab} onSelectTab={setActiveTab} />
 
-        {/* PayPal Smart Escrow & Milestone Progression */}
-        {contract && (
-          <EscrowTimeline
-            contract={contract}
-            deliverables={deliverables}
-            onVerifyMilestone={handleVerifyMilestone}
-            onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
-            isOrderCaptured={isOrderCaptured}
-            onEscalateToArbitration={() => document.getElementById('themis-section')?.scrollIntoView({ behavior: 'smooth' })}
-          />
+        {/* TAB 1: Core Escrow & Multi-Agent Commerce */}
+        {activeTab === 'escrow' && (
+          <>
+            <HeroBanner
+              selectedScenario={selectedScenario}
+              onSelectScenario={handleSelectScenario}
+              onRunNegotiation={() => handleRunNegotiation()}
+              isNegotiating={isNegotiating}
+              onScrollToGrid={() => setActiveTab('grid')}
+            />
+
+            <NegotiationArena
+              contract={contract}
+              isNegotiating={isNegotiating}
+              onRunNegotiation={() => handleRunNegotiation()}
+              onProceedToEscrow={() => document.getElementById('escrow-section')?.scrollIntoView({ behavior: 'smooth' })}
+            />
+
+            {contract && (
+              <EscrowTimeline
+                contract={contract}
+                deliverables={deliverables}
+                onVerifyMilestone={handleVerifyMilestone}
+                onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
+                isOrderCaptured={isOrderCaptured}
+                onEscalateToArbitration={() => document.getElementById('themis-section')?.scrollIntoView({ behavior: 'smooth' })}
+              />
+            )}
+
+            <ThemisArbiter
+              contract={contract}
+              disputeData={disputeData}
+              onRunArbitration={handleRunArbitration}
+              arbitrationRuling={arbitrationRuling}
+              isArbitrating={isArbitrating}
+            />
+
+            <AgentTelemetryGrid
+              transactions={transactions}
+              onRowAction={handleRowAction}
+            />
+          </>
         )}
 
-        {/* Themis AI Autonomous Arbitration Court (Appears on SLA breach) */}
-        <ThemisArbiter
-          contract={contract}
-          disputeData={disputeData}
-          onRunArbitration={handleRunArbitration}
-          arbitrationRuling={arbitrationRuling}
-          isArbitrating={isArbitrating}
-        />
+        {/* TAB 2: AG Grid Fleet Telemetry */}
+        {activeTab === 'grid' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between text-xs font-mono text-amber-300">
+              <span>AG Grid Community & Enterprise v36 Active</span>
+              <span>Sub-Millisecond Sorting & Filtering Enabled</span>
+            </div>
+            <AgentTelemetryGrid
+              transactions={transactions}
+              onRowAction={handleRowAction}
+            />
+          </div>
+        )}
 
-        {/* Enterprise AG Grid Fleet Telemetry */}
-        <AgentTelemetryGrid
-          transactions={transactions}
-          onRowAction={handleRowAction}
-        />
+        {/* TAB 3: Bryntum Milestone Gantt */}
+        {activeTab === 'bryntum' && (
+          <div className="animate-fade-in">
+            <BryntumGanttView onTriggerMilestonePayout={handleBryntumPayout} />
+          </div>
+        )}
+
+        {/* TAB 4: Channel3 Commerce Catalog */}
+        {activeTab === 'channel3' && (
+          <div className="animate-fade-in">
+            <Channel3Catalog onDispatchRfq={handleDispatchChannel3Rfq} />
+          </div>
+        )}
+
+        {/* TAB 5: Elastic Intelligence & Logs */}
+        {activeTab === 'elastic' && (
+          <div className="animate-fade-in">
+            <ElasticSearchConsole />
+          </div>
+        )}
+
+        {/* TAB 6: Postman & APIMatic DevHub */}
+        {activeTab === 'devhub' && (
+          <div className="animate-fade-in">
+            <PostmanApiRunner />
+          </div>
+        )}
       </main>
 
       {/* Modals & Drawers */}
@@ -301,14 +390,22 @@ export default function App() {
             <span>•</span>
             <span>Built for the PayPal AI Global Hackathon 2026</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>PayPal Developer Rails</span>
+          <div className="flex flex-wrap items-center gap-3 text-slate-400">
+            <span>PayPal Developer</span>
             <span>•</span>
-            <span>AG Grid Enterprise</span>
+            <span>AG Grid</span>
             <span>•</span>
-            <span>APIMatic Ready</span>
+            <span>Bryntum</span>
             <span>•</span>
-            <span>MIT License</span>
+            <span>Channel3</span>
+            <span>•</span>
+            <span>Elastic</span>
+            <span>•</span>
+            <span>Postman</span>
+            <span>•</span>
+            <span>APIMatic</span>
+            <span>•</span>
+            <span>Render</span>
           </div>
         </div>
       </footer>

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import paypalRoutes from './routes/paypalRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import telemetryRoutes from './routes/telemetryRoutes.js';
+import sponsorRoutes from './routes/sponsorRoutes.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/paypal', paypalRoutes);
 app.use('/api/agent', agentRoutes);
 app.use('/api/telemetry', telemetryRoutes);
+app.use('/api', sponsorRoutes);
 
 // OpenAPI Spec endpoint for APIMatic and Postman
 app.get('/api/docs/openapi.json', (req, res) => {

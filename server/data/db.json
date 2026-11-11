@@ -7,17 +7,185 @@
   },
   "treasury": {
     "currency": "USD",
-    "totalEscrowLocked": 4100,
-    "totalSettledVolume": 18450,
+    "totalEscrowLocked": 10618,
+    "totalSettledVolume": 7315.5,
     "disputedVolume": 3200,
     "liquidVaultBalance": 84520,
-    "activeAgentsCount": 12,
+    "activeAgentsCount": 15,
     "anomaliesCount": 2,
     "arbitrationWinRate": "94.2%",
     "averageSettlementLatency": "1.4s"
   },
-  "contracts": [],
+  "contracts": [
+    {
+      "contractId": "NP-CTR-75F1BB61",
+      "scenarioId": "gpu_procurement",
+      "title": "Autonomous H100 GPU Cluster Procurement",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "message": "Issuing Request For Quote (RFQ) for: \"Autonomous H100 GPU Cluster Procurement\". Budget ceiling: $2400.00. Hard requirement: 3-phase PayPal Smart Escrow with cryptographic milestone verification. Uptime guarantee: 99.9% uptime, <15ms peer latency.",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.9% uptime, <15ms peer latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-11T10:44:34.019Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "message": "Capacity verified for \"Autonomous H100 GPU Cluster Procurement\". Counter-proposal: $2280.00 total, structured as 25% M1 (Benchmark), 50% M2 (Distributed Execution), 25% M3 (Signoff). SLA commitment: 99.85% guaranteed.",
+          "proposal": {
+            "budget": 2280,
+            "milestones": 3,
+            "sla": "99.85% SLA guaranteed, automated webhook telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-11T10:44:35.019Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "message": "Evaluating counter-proposal against NovaCorp Financial Covenant Mandate #892. Accepted with Themis AI Arbiter binding escrow clause. Final settlement figure: $2208.00.",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-11T10:44:36.019Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "message": "Agreement reached. Hermes Agent commits 100% capacity to Contract #NP-TNSYS. Initializing PayPal Escrow Order.",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES",
+            "contractHash": "0x204bf9a59b29b9f012ea86155509fbb86b4533f3"
+          },
+          "timestamp": "2026-11-11T10:44:37.020Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "ORD-5D5T1OF5",
+        "status": "CREATED",
+        "intent": "CAPTURE",
+        "links": [
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=ORD-5D5T1OF5",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/ORD-5D5T1OF5/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ],
+        "purchase_units": [
+          {
+            "reference_id": "PU_ORD-5D5T1OF5",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-75F1BB61]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09"
+          }
+        ],
+        "create_time": "2026-11-11T10:44:38.020Z"
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Cluster Provisioning & Environment Benchmark",
+          "share": 0.25,
+          "proofType": "CUDA_BENCHMARK_HASH",
+          "expectedProof": "pass: 16x SXM5 H100 nodes initialized, 3.2Tbps NVLink verified",
+          "milestoneIndex": 1,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Distributed Training Job Execution (48h)",
+          "share": 0.5,
+          "proofType": "WEIGHT_CHECKPOINT_HASH",
+          "expectedProof": "checkpoint_epoch_10_loss_0.142_sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "milestoneIndex": 2,
+          "amount": 1104,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Final Latency & SLA Validation Signoff",
+          "share": 0.25,
+          "proofType": "TELEMETRY_LOG_AUDIT",
+          "expectedProof": "100% SLA compliance, 0 dropped frames, cluster deprovisioned cleanly",
+          "milestoneIndex": 3,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-11T10:44:38.020Z"
+    }
+  ],
   "transactions": [
+    {
+      "id": "TXN-2998DC-PP",
+      "timestamp": "2026-11-11T10:44:38.021Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "High-Performance Cloud Infrastructure",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "ORD-5D5T1OF5",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2"
+    },
     {
       "id": "TXN-98214-PP",
       "timestamp": "2026-11-11T10:36:23.747Z",

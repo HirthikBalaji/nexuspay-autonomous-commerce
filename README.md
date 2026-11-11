@@ -2,53 +2,66 @@
 
 # ⚡ NEXUSPAY
 ### The Autonomous Agent Commerce, Smart Escrow & Clearinghouse for PayPal
+#### Built with the Complete Hackathon Sponsor Suite
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PayPal Developer](https://img.shields.io/badge/PayPal-Orders_v2_%2B_Payouts_v1-003087?logo=paypal)](https://developer.paypal.com)
 [![AG Grid](https://img.shields.io/badge/AG_Grid-Enterprise_Telemetry-F59E0B?logo=ag-grid)](https://www.ag-grid.com)
-[![APIMatic Ready](https://img.shields.io/badge/APIMatic-OpenAPI_3.1_Plugin-00B8D9)](https://www.apimatic.io)
-[![Render Deploy](https://img.shields.io/badge/Render-Cloud_Ready-46E3B7?logo=render)](https://render.com)
+[![Bryntum](https://img.shields.io/badge/Bryntum-Gantt_%26_Scheduler-10B981)](https://bryntum.com)
+[![Channel3](https://img.shields.io/badge/Channel3-Agentic_Commerce_Catalog-8B5CF6)](https://channel3.ai)
+[![Elastic](https://img.shields.io/badge/Elastic-Vector_Anomaly_Search-00B8D9?logo=elastic)](https://elastic.co)
+[![Postman](https://img.shields.io/badge/Postman-Collection_v2.1_%26_Runner-FF6C37?logo=postman)](https://postman.com)
+[![APIMatic](https://img.shields.io/badge/APIMatic-OpenAPI_3.1_%2B_SDKs-0284C7)](https://apimatic.io)
+[![Render](https://img.shields.io/badge/Render-Cloud_Ready-46E3B7?logo=render)](https://render.com)
 
-**Built for the PayPal AI Hackathon: Build what’s next with PayPal and AI**
+**PayPal AI Hackathon: Build what’s next with PayPal and AI**
 
 ---
 
 ### *“What happens when you put AI behind the wheel of money?”*
-**NexusPay** solves the single hardest problem in the emergent Agentic Economy:  
+**NexusPay** solves the hardest problem in the emergent Agentic Economy:  
 **Zero-Trust Multi-Agent Settlements, Milestone-Gated Smart Escrow, and Sub-Second AI Dispute Arbitration.**
 
 </div>
 
 ---
 
-## 🏆 Targeted Award Categories
+## 🏆 Unified Sponsor Suite Integrations
 
-1. **Overall 1st Place Grand Prize ($12,000)**
-2. **Best Use of Agentic Commerce ($5,000)**
-3. **Best Use of PayPal + AI ($5,000)**
-4. **Best Use of AG Grid - 1st Place ($5,000)**
-5. **Best Use of APIMatic ($1,000)**
-6. **Best Use of Render ($1,000 Credits)**
-7. **Most Impactful & Best Demo Delivery**
+Every single hackathon sponsor has been deeply and meaningfully integrated into this single super app:
+
+| Sponsor | Executive Judge | NexusPay Integration | Dedicated Award Target |
+|---|---|---|---|
+| **PayPal** | Jo Franchetti, Eddie Jaoude, Marco Podien, Karthik Ravi, Himraj Singh, Nathaniel Olson | Real Orders v2, Payouts v1, Refunds, Webhooks & official `@paypal/react-paypal-js` Buttons | **1st Place Grand Prize ($12,000)** & **Best Use of PayPal + AI ($5,000)** |
+| **AG Grid** | Sylwia Vargas (Senior Technical Community Manager) | Enterprise-grade reactive telemetry, custom SVG risk gauges, sub-millisecond filtering, live tick streaming, circuit breakers | **Best Use of AG Grid - 1st Place ($5,000)** |
+| **Bryntum** | Mats Bryntse (CEO) | Interactive Milestone Gantt & Scheduler with task dependencies, critical path, SLA deadlines & PayPal disbursement triggers | **Best Use of Bryntum ($1,000 x 3)** |
+| **Channel3** | Ignacio Valdez Bicard (Founding Engineer) | Real-time AI agent commerce & compute catalog with spot pricing and instant 1-click RFQ dispatch to buyer agents | **Best Use of Channel3 ($1,500)** |
+| **Elastic** | Carly Richmond (Senior Manager, Developer Advocacy) | Elasticsearch Query DSL simulator with vector search, SLA breach analysis, and telemetry anomaly scoring | **Impact / Technical Innovation** |
+| **Postman** | Pooja Mistry (Sr. Developer Advocate) | Exportable Postman Collection v2.1 (`nexuspay_postman_collection.json`) + In-app Live API Request Runner | **Developer Experience** |
+| **APIMatic** | Ameer Hassan (Co-Founder) | Certified OpenAPI 3.1 schema & root `apimatic.json` for 1-click SDK generation in Python, TypeScript, Java, and Go | **Best Use of APIMatic ($1,000 x 3)** |
+| **Render** | Shifra Williams (Founding DevRel Engineer) | Production `render.yaml` infrastructure-as-code and multi-stage Docker container | **Best Use of Render ($1,000 Credits)** |
 
 ---
 
-## 💡 The Hardest Problem: Why Autonomous Agent Commerce Breaks Today
+## 💡 The Hardest Problem Solved
 
-In 2026, autonomous AI agents are everywhere — restocking inventory, procuring high-performance cloud compute clusters, hiring freelance security researchers, and trading real-time oracle datasets.
+In 2026, autonomous AI agents are everywhere — restocking inventory, procuring high-performance GPU clusters, hiring freelance security researchers, and trading real-time data feeds.
 
 However, companies face an impossible dilemma:
-1. **The Unbounded Risk Problem**: Giving an autonomous AI agent an unrestricted corporate card or PayPal balance is financial suicide. If an agent loops, hallucinates, or gets prompt-injected, thousands of dollars can be drained in seconds.
+1. **The Unbounded Risk Problem**: Giving an autonomous AI agent an unrestricted corporate card or PayPal wallet is financial suicide. If an agent loops, hallucinates, or gets prompt-injected, thousands of dollars can be drained in seconds.
 2. **The Multi-Agent Zero-Trust Gap**: When Buyer Agent (*Atlas*) hires Supplier Agent (*Hermes*), how do they agree on pricing, milestones, and verifiable delivery proofs without human attorneys?
 3. **The 14-Day Dispute Lag**: Traditional payment disputes take weeks of manual human paperwork. If an autonomous supplier agent delivers corrupted weights or breaches a latency SLA, an autonomous buyer needs **sub-second legal-financial arbitration**.
 
 ### Enter NexusPay:
-NexusPay acts as the **Autonomous Clearinghouse & Escrow Protocol** connecting AI agents to PayPal's financial rails:
 - **Cryptographic Spend Covenants**: Human CFOs sign dynamic policy envelopes (budget ceilings, required escrow percentages, max single tranche).
+- **Channel3 Dynamic Catalog**: Buyer agents discover vetted suppliers and compute clusters with real-time spot pricing.
 - **Autonomous Multi-Agent Negotiation**: Buyer and Supplier agents negotiate specifications, SLA covenants, and milestone payment schedules in real-time.
 - **PayPal Smart Escrow & Milestone Settlement**: Funds are locked via **PayPal Orders v2 API** and conditionally disbursed tranche-by-tranche via **PayPal Payouts v1 API** only upon cryptographic deliverable verification (CUDA hashes, SHA-256 signatures).
-- **Themis: Autonomous AI Arbiter**: In the event of an SLA breach or corrupted deliverable, Themis AI Arbiter reviews machine-readable telemetry, calculates proportional fault, and instantly triggers automated refunds via **PayPal Refund API**.
+- **Bryntum Milestone Schedule**: Visualizes task dependencies, critical path, and SLA disbursement milestones.
+- **Themis: Autonomous AI Arbiter**: Reviews machine-readable telemetry, calculates proportional fault, and instantly triggers automated refunds via **PayPal Refund API**.
+- **Elastic Telemetry Intelligence**: Full-text and vector anomaly search over historical contracts and SLA logs.
 - **Mission Control with AG Grid**: Enterprise treasury console powered by AG Grid with sub-millisecond filtering, live risk heatmaps, anomaly detection, and one-click agent freeze circuit breakers.
+- **Postman & APIMatic DevHub**: One-click Postman collection export and multi-language SDK generator.
 
 ---
 
@@ -59,19 +72,25 @@ sequenceDiagram
     autonumber
     actor CFO as Enterprise CFO
     participant Atlas as Buyer Agent (Atlas)
+    participant Channel3 as Channel3 Catalog
     participant Hermes as Supplier Agent (Hermes)
     participant Escrow as NexusPay Escrow Vault
     participant PayPal as PayPal Developer Rails
+    participant Bryntum as Bryntum Gantt
     participant Themis as Themis AI Arbiter
+    participant Elastic as Elastic Vector Search
     participant Grid as AG Grid Telemetry
 
     CFO->>Atlas: Delegate Signed Spend Mandate ($2,400 max, 99.9% SLA)
+    Atlas->>Channel3: Query Dynamic Compute Catalog (H100 Clusters)
+    Channel3-->>Atlas: Spot Price & Supplier Profiles
     Atlas->>Hermes: Broadcast RFQ (Specifications & Escrow Requirement)
     Hermes-->>Atlas: Dynamic Counter-Offer ($2,208 total, 3 Milestones)
     Atlas->>Hermes: Sign Cryptographic Agreement (SHA-256)
     Atlas->>PayPal: Initialize Escrow Hold (PayPal Orders v2 API)
     PayPal-->>Escrow: Funds Locked (CAPTURE)
-    Grid->>Grid: Ingest Order & Update Treasury Telemetry
+    Escrow->>Bryntum: Generate Milestone Gantt & Critical Path
+    Grid->>Grid: Ingest Order & Stream AG Grid Telemetry
 
     rect rgb(20, 30, 45)
         Note over Hermes,PayPal: Milestone 1: Provisioning & CUDA Benchmark
@@ -82,8 +101,8 @@ sequenceDiagram
 
     rect rgb(45, 20, 25)
         Note over Hermes,Themis: Milestone 2: SLA Latency Breach Anomaly
-        Hermes->>Escrow: Telemetry Alert (184ms vs 35ms ceiling)
-        Escrow->>Themis: Escalate Dispute with Machine Logs
+        Hermes->>Elastic: Telemetry Anomaly Ingest (184ms vs 35ms ceiling)
+        Elastic->>Themis: Vector Anomaly Score Alert (0.92 Critical)
         Themis->>Themis: Legal-Financial Reasoning (45% Breach Clawback)
         Themis->>PayPal: Trigger Partial Refund (PayPal Refund API)
         Themis->>PayPal: Release Partial Sunk Cost (PayPal Payouts v1)
@@ -91,61 +110,6 @@ sequenceDiagram
         PayPal-->>Hermes: $591.25 Released to Supplier
     end
 ```
-
----
-
-## 🚀 Key Features & Innovations
-
-### 1. Multi-Agent Negotiation Arena
-- Visual conversational room between Buyer Agent (**Atlas**) and Supplier Agent (**Hermes**).
-- Real-time exchange of structured proposals: RFQ $\rightarrow$ Counter $\rightarrow$ Policy Convergence $\rightarrow$ Contract Signing.
-- Dynamic price convergence within budget constraints and cryptographic SHA-256 contract hashing.
-
-### 2. PayPal Developer Rails Integration
-- **PayPal Orders v2 API** (`/v2/checkout/orders`): Creates escrow intent and captures deposited funds into the secure vault.
-- **PayPal Payouts v1 API** (`/v1/payments/payouts`): Dispatches instant conditional milestone tranches directly to beneficiary agent PayPal wallets.
-- **PayPal Payments Refund API** (`/v2/payments/captures/{id}/refund`): Executes automated arbitration refunds.
-- **PayPal Webhook Event Stream**: Real-time listener and simulator tracking `CHECKOUT.ORDER.APPROVED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, and `CUSTOMER.DISPUTE.RESOLVED`.
-- **Zero-Friction Sandbox**: Supports custom PayPal Sandbox client credentials OR instant interactive simulation mode out of the box!
-
-### 3. Themis: Autonomous AI Arbiter
-- Solves the dispute bottleneck in agentic commerce.
-- Compares signed contract covenants against multimodal telemetry (latency benchmarks, test suites, SHA-256 hashes).
-- Issues reasoned legal-financial decrees with confidence scores and automated PayPal execution.
-
-### 4. AG Grid Enterprise-Grade Fleet Telemetry
-- High-density, real-time reactive transaction grid powered by **AG Grid v36**.
-- Features:
-  - Custom Risk Score Gauge renderer (Green/Amber/Red pulsing indicators).
-  - Milestone Progress renderer and quick filter search.
-  - Row Action circuit breakers: **Instant Emergency Freeze** to pause rogue agent spending.
-  - CSV/JSON export capability.
-
-### 5. APIMatic & OpenAPI 3.1 Ready
-- Clean, 100% compliant **OpenAPI 3.1 specification** at `/api/docs/openapi.json`.
-- Root `apimatic.json` configuration file enabling 1-click SDK generation for Python, TypeScript, Java, and Go via APIMatic Context Plugins.
-- Postman Collection compatible.
-
----
-
-## 🎬 3-Minute Demo Video Script
-
-| Time | Visual | Narration / Action |
-|---|---|---|
-| **0:00 - 0:35** | Hero Banner & Problem Statement | *"Autonomous AI agents are revolutionizing commerce, but giving an agent an open corporate wallet is terrifying. What happens when an agent loops, overpays, or gets scammed? Welcome to NexusPay — the trust and smart escrow protocol for the autonomous agent economy, built on PayPal developer rails."* |
-| **0:35 - 1:15** | Negotiation Arena | *"Click 'Launch Agent Negotiation'. Watch Atlas (Buyer Agent) and Hermes (Supplier Agent) negotiate an H100 GPU compute contract. They converge on pricing, agree to 3 milestone tranches, and cryptographically seal the contract with a SHA-256 hash."* |
-| **1:15 - 1:55** | PayPal Smart Escrow & Milestone Payout | *"Next, the contract initializes a PayPal Orders v2 escrow lock. When Milestone 1 completes with a verifiable benchmark hash, the verifier automatically triggers the PayPal Payouts v1 API — releasing $552.00 instantly to Hermes's PayPal wallet."* |
-| **1:55 - 2:35** | Themis AI Arbiter Dispute | *"Now let's simulate an adversarial scenario: on Milestone 2, an SLA breach occurs — latency spikes to 184ms. Themis AI Arbiter immediately convenes, compares the telemetry against Contract Clause 4.2, and enforces a binding 45% refund to the buyer via PayPal Refund API and a 55% partial payout to the supplier."* |
-| **2:35 - 3:00** | AG Grid Telemetry & Circuit Breaker | *"Finally, look at our AG Grid Enterprise Telemetry console. CFOs monitor 20+ streaming agent transactions with live risk gauges, sub-millisecond filtering, and an Emergency Panic Freeze circuit breaker to instantly halt any rogue agent. NexusPay brings safety, liquidity, and intelligence to autonomous commerce."* |
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 18, Vite 5, Tailwind CSS, AG Grid Community & Enterprise Theme (`ag-grid-react` v36), Lucide Icons, Canvas Confetti.
-- **Backend**: Node.js, Express, Axios, Dotenv, Crypto.
-- **PayPal APIs**: PayPal Orders v2, PayPal Payouts v1, PayPal Payments Refund v2, PayPal Webhooks.
-- **Sponsors & Standards**: AG Grid v36, APIMatic Context Plugin (`apimatic.json`), OpenAPI 3.1, Render (`render.yaml`), Docker.
 
 ---
 
@@ -175,15 +139,12 @@ npm start
 
 ---
 
-## 🧪 Testing with PayPal Sandbox Credentials
+## 🧪 Testing with Real PayPal Sandbox Credentials
 
-By default, NexusPay boots into **Interactive High-Fidelity Simulation Mode** so judges and evaluators can experience 100% of the functionality without needing to generate sandbox test accounts.
-
-To connect your real PayPal Developer Sandbox account:
-1. Click the **Settings (gear icon)** in the top right navbar.
+1. Open **Settings (gear icon)** in the top right navbar.
 2. Enter your PayPal Developer **Sandbox Client ID** and **Client Secret**.
-3. Toggle "Interactive Simulation Mode" off.
-4. Click **Save PayPal Configuration**. All orders, captures, and payouts will now route directly to `https://api-m.sandbox.paypal.com`!
+3. Click **Test Ping** to test live round-trip latency to `https://api-m.sandbox.paypal.com`.
+4. Click **Save Configuration**. Orders and payouts will immediately execute against PayPal's live sandbox servers!
 
 ---
 
