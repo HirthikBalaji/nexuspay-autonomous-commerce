@@ -1,8 +1,20 @@
-import React, { useMemo, useState, useRef, useCallback } from 'react';
+import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import { Search, Download, PauseCircle, PlayCircle, Zap, Shield, Sparkles } from 'lucide-react';
+import { 
+  Search, 
+  Download, 
+  PauseCircle, 
+  PlayCircle, 
+  Zap, 
+  ShieldAlert, 
+  Radio, 
+  Plus, 
+  Filter, 
+  ShieldCheck 
+} from 'lucide-react';
 import { formatCurrency, formatRelativeTime } from '../utils/formatters';
+import { agentService } from '../services/agentService';
 
 // Register AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -68,10 +80,10 @@ function ActionCellRenderer(params) {
     <div className="flex items-center gap-1.5 h-full">
       <button
         onClick={() => context.onRowAction(data.id, isFrozen ? 'UNFREEZE' : 'FREEZE_AGENT')}
-        title={isFrozen ? 'Unfreeze Agent' : 'Emergency Freeze Agent'}
+        title={isFrozen ? 'Unfreeze Agent' : 'Emergency Freeze Agent (Circuit Breaker)'}
         className={`p-1.5 rounded-lg text-xs font-semibold transition-all ${
           isFrozen 
-            ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30' 
+            ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 ring-1 ring-amber-400/50' 
             : 'bg-slate-800 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
         }`}
       >
@@ -89,9 +101,50 @@ function ActionCellRenderer(params) {
   );
 }
 
-export default function AgentTelemetryGrid({ transactions, onRowAction }) {
+export default function AgentTelemetryGrid({ transactions = [], onRowAction, onAddTransaction }) {
   const gridRef = useRef(null);
   const [quickFilterText, setQuickFilterText] = useState('');
+  const [activeFilterTab, setActiveFilterTab] = useState('ALL');
+  const [isAutoStreaming, setIsAutoStreaming] = useState(false);
+
+  // Auto-streaming ticker effect
+  useEffect(() => {
+    let interval = null;
+    if (isAutoStreaming) {
+      interval = setInterval(async () => {
+        try {
+          const res = await agentService.simulateTelemetryTick();
+          if (res?.success && onAddTransaction) {
+            onAddTransaction(res.transaction);
+          }
+        } catch (err) {
+          console.warn('Stream tick error:', err);
+        }
+      }, 2500);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isAutoStreaming, onAddTransaction]);
+
+  const handleManualTick = async () => {
+    try {
+      const res = await agentService.simulateTelemetryTick();
+      if (res?.success && onAddTransaction) {
+        onAddTransaction(res.transaction);
+      }
+    } catch (err) {
+      console.warn('Manual tick error:', err);
+    }
+  };
+
+  // Filtered rows based on quick filter tabs
+  const filteredData = useMemo(() => {
+    if (activeFilterTab === 'RISK') return transactions.filter(t => t.riskScore > 50);
+    if (activeFilterTab === 'ESCROW') return transactions.filter(t => t.milestoneStage.includes('Locked'));
+    if (activeFilterTab === 'COMPLETED') return transactions.filter(t => t.milestoneStage === 'Completed');
+    return transactions;
+  }, [transactions, activeFilterTab]);
 
   // Column definitions
   const columnDefs = useMemo(() => [
@@ -203,22 +256,45 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
   return (
     <div id="telemetry-grid-section" className="bg-[#0D1424] border border-white/[0.08] rounded-3xl p-6 my-5 shadow-xl">
       {/* Grid Controls Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
             <h3 className="text-base font-bold text-white">Autonomous Agent Fleet Telemetry</h3>
             <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
-              AG Grid v36
+              AG Grid Enterprise Mode
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5 font-normal">
-            Real-time streaming ledger of autonomous transactions, risk telemetry, and circuit breaker controls
+            Sub-millisecond reactive telemetry, real-time streaming risk gauges, and agent circuit breakers
           </p>
         </div>
 
-        {/* Search & Export Actions */}
-        <div className="flex items-center gap-2.5">
+        {/* Live Streaming & Quick Controls */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Live Auto-Stream Toggle */}
+          <button
+            onClick={() => setIsAutoStreaming(!isAutoStreaming)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+              isAutoStreaming
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20'
+                : 'bg-slate-900 text-slate-400 border-white/[0.08] hover:text-white'
+            }`}
+          >
+            <Radio className={`w-3.5 h-3.5 ${isAutoStreaming ? 'animate-pulse text-emerald-400' : ''}`} />
+            <span>{isAutoStreaming ? 'Live Stream: ACTIVE' : 'Start Live Stream'}</span>
+          </button>
+
+          {/* Inject Tick Button */}
+          <button
+            onClick={handleManualTick}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 text-slate-300 border border-white/[0.08] hover:bg-slate-800 text-xs font-medium transition-all"
+            title="Inject simulated agent transaction"
+          >
+            <Plus className="w-3.5 h-3.5 text-sky-400" />
+            <span className="hidden sm:inline">Inject Tick</span>
+          </button>
+
           {/* Quick Filter Search */}
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -227,7 +303,7 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
               placeholder="Filter agents, hash, status..."
               value={quickFilterText}
               onChange={(e) => setQuickFilterText(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs bg-slate-900/90 border border-white/[0.08] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 w-44 sm:w-56 transition-all"
+              className="pl-8 pr-3 py-1.5 text-xs bg-slate-900/90 border border-white/[0.08] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 w-36 sm:w-48 transition-all"
             />
           </div>
 
@@ -243,12 +319,35 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
         </div>
       </div>
 
+      {/* Filter Chips Bar */}
+      <div className="flex items-center gap-2 mt-3 text-xs">
+        <span className="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Filter:</span>
+        {[
+          { key: 'ALL', label: `All (${transactions.length})` },
+          { key: 'RISK', label: `High Risk (${transactions.filter(t => t.riskScore > 50).length})` },
+          { key: 'ESCROW', label: 'Escrow Locked' },
+          { key: 'COMPLETED', label: 'Settled & Completed' }
+        ].map(chip => (
+          <button
+            key={chip.key}
+            onClick={() => setActiveFilterTab(chip.key)}
+            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+              activeFilterTab === chip.key
+                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                : 'bg-slate-900/60 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
+
       {/* AG Grid Component */}
       <div className="mt-4 w-full h-[460px]">
         <div className="ag-theme-quartz-dark w-full h-full rounded-2xl overflow-hidden shadow-2xl">
           <AgGridReact
             ref={gridRef}
-            rowData={transactions}
+            rowData={filteredData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             quickFilterText={quickFilterText}

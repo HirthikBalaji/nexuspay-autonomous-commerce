@@ -45,6 +45,11 @@ export const agentService = {
     return res.data;
   },
 
+  async simulateTelemetryTick() {
+    const res = await axios.post(`${API_BASE}/telemetry/simulate-tick`);
+    return res.data;
+  },
+
   async triggerTelemetryAction(transactionId, action, reason) {
     const res = await axios.post(`${API_BASE}/telemetry/action`, {
       transactionId,
