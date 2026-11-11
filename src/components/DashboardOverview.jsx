@@ -23,7 +23,10 @@ export default function DashboardOverview({
   isArbitrating,
   transactions,
   onRowAction,
-  onNavigateToTab
+  onNavigateToTab,
+  selectedScenario,
+  onSelectScenario,
+  onAddTransaction
 }) {
   return (
     <div className="space-y-6">
@@ -39,6 +42,8 @@ export default function DashboardOverview({
             isNegotiating={isNegotiating}
             onRunNegotiation={onRunNegotiation}
             onProceedToEscrow={() => document.getElementById('escrow-section')?.scrollIntoView({ behavior: 'smooth' })}
+            selectedScenario={selectedScenario}
+            onSelectScenario={onSelectScenario}
           />
         </div>
 
@@ -63,7 +68,7 @@ export default function DashboardOverview({
                 Awaiting agreement execution. Launch the agent negotiation to initialize the PayPal Orders v2 escrow lock.
               </p>
               <button
-                onClick={onRunNegotiation}
+                onClick={() => onRunNegotiation()}
                 disabled={isNegotiating}
                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0070BA] to-sky-500 text-white font-semibold text-xs transition-all shadow-md shadow-sky-500/20 hover:scale-[1.01]"
               >
@@ -88,6 +93,7 @@ export default function DashboardOverview({
         <AgentTelemetryGrid
           transactions={transactions}
           onRowAction={onRowAction}
+          onAddTransaction={onAddTransaction}
         />
       </div>
     </div>

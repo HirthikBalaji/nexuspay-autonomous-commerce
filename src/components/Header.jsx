@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, RefreshCw, Cpu, ShieldAlert, Sparkles, ShieldCheck } from 'lucide-react';
+import { Play, RefreshCw, Cpu, ShieldAlert, Trophy, Radio } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function Header({
@@ -9,7 +9,8 @@ export default function Header({
   onRunNegotiation,
   isNegotiating,
   onRefresh,
-  treasury
+  treasury,
+  onOpenTour
 }) {
   const getTabTitle = () => {
     switch (activeTab) {
@@ -26,7 +27,7 @@ export default function Header({
   };
 
   return (
-    <header className="h-16 border-b border-white/[0.06] bg-[#090D18]/80 backdrop-blur-xl px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
+    <header className="h-16 border-b border-white/[0.06] bg-[#090D18]/80 backdrop-blur-xl px-4 lg:px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
       {/* View Title */}
       <div className="flex items-center gap-3">
         <h2 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
@@ -46,7 +47,7 @@ export default function Header({
           }`}
         >
           <Cpu className="w-3.5 h-3.5" />
-          <span>GPU Procurement (Clean)</span>
+          <span>GPU (Clean)</span>
         </button>
 
         <button
@@ -58,15 +59,25 @@ export default function Header({
           }`}
         >
           <ShieldAlert className="w-3.5 h-3.5" />
-          <span>Security Audit (Dispute)</span>
+          <span>Audit (Dispute)</span>
         </button>
       </div>
 
       {/* Right Controls & Quick Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
+        {/* Judge Tour Button (Highlight for Hackathon Judges) */}
+        <button
+          onClick={onOpenTour}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-600/20 text-amber-300 border border-amber-500/40 hover:brightness-125 text-xs font-bold tracking-wide transition-all shadow-md shadow-amber-500/10 hover:scale-[1.02]"
+          title="Interactive 90-Second Guided Tour for Hackathon Judges"
+        >
+          <Trophy className="w-3.5 h-3.5 text-amber-400" />
+          <span>Judge Tour</span>
+        </button>
+
         {/* Treasury Escrow Pill */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs">
-          <span className="text-slate-400 text-[11px]">Escrow Locked:</span>
+          <span className="text-slate-400 text-[11px]">Vault:</span>
           <span className="font-mono font-bold text-sky-400">
             {formatCurrency(treasury?.totalEscrowLocked || 4100)}
           </span>
@@ -76,14 +87,14 @@ export default function Header({
         <button
           onClick={onRunNegotiation}
           disabled={isNegotiating}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all shadow-md ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all shadow-md ${
             isNegotiating
               ? 'bg-[#0070BA]/50 cursor-wait'
               : 'bg-gradient-to-r from-[#0070BA] to-sky-500 hover:brightness-110 shadow-sky-500/20 hover:scale-[1.01] active:scale-[0.98]'
           }`}
         >
           <Play className={`w-3.5 h-3.5 fill-white ${isNegotiating ? 'animate-spin' : ''}`} />
-          <span>{isNegotiating ? 'Negotiating...' : 'Launch Agents'}</span>
+          <span className="hidden sm:inline">{isNegotiating ? 'Negotiating...' : 'Launch Agents'}</span>
         </button>
 
         {/* Refresh */}

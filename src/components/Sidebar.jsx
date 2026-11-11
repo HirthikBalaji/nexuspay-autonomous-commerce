@@ -14,7 +14,8 @@ import {
   FileCode, 
   Wifi, 
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Trophy
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -24,7 +25,8 @@ export default function Sidebar({
   onToggleFreeze, 
   onOpenSettings, 
   onOpenDocs,
-  treasury 
+  treasury,
+  onOpenTour
 }) {
   const mainNav = [
     { id: 'escrow', label: 'Dashboard & Escrow', icon: LayoutDashboard, badge: 'Live' },
@@ -67,7 +69,23 @@ export default function Sidebar({
         </div>
 
         {/* Navigation Sections */}
-        <div className="p-3.5 space-y-6">
+        <div className="p-3.5 space-y-5">
+          {/* Judge Guided Walkthrough Tour Button */}
+          {onOpenTour && (
+            <button
+              onClick={onOpenTour}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-600/20 text-amber-300 border border-amber-500/40 hover:brightness-125 transition-all shadow-md shadow-amber-500/10 hover:scale-[1.01]"
+            >
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-amber-400" />
+                <span>Judge Tour (90s)</span>
+              </div>
+              <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-black">
+                Start
+              </span>
+            </button>
+          )}
+
           {/* Main Core */}
           <div>
             <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">

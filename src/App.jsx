@@ -13,6 +13,7 @@ import PostmanApiRunner from './components/PostmanApiRunner';
 import PayPalModal from './components/PayPalModal';
 import SettingsDrawer from './components/SettingsDrawer';
 import ApiDocsModal from './components/ApiDocsModal';
+import JudgeTourModal from './components/JudgeTourModal';
 import confetti from 'canvas-confetti';
 
 import { agentService } from './services/agentService';
@@ -43,6 +44,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [isPayPalModalOpen, setIsPayPalModalOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     loadInitialData();
@@ -64,20 +66,23 @@ export default function App() {
   };
 
   // Launch Multi-Agent Negotiation
-  const handleRunNegotiation = async (customTask = null) => {
+  const handleRunNegotiation = async (customTask = null, overrideScenario = null) => {
     setIsNegotiating(true);
     setDisputeData(null);
     setArbitrationRuling(null);
     setIsOrderCaptured(false);
 
+    const scenarioToUse = overrideScenario || selectedScenario;
+
     try {
       const data = await agentService.negotiate({
-        scenarioId: selectedScenario,
+        scenarioId: scenarioToUse,
         customTask: customTask
       });
       setContract(data);
       setDeliverables(data.deliverables || []);
       setIsOrderCaptured(true);
+      loadInitialData();
     } catch (err) {
       alert('Negotiation failed: ' + err.message);
     } finally {
@@ -90,7 +95,8 @@ export default function App() {
     setActiveTab('escrow');
     handleRunNegotiation({
       title: item.name,
-      budget: item.estimatedContractBudget
+      budget: item.estimatedContractBudget,
+      slaRequirement: item.slaGuarantee
     });
   };
 
@@ -150,7 +156,7 @@ export default function App() {
         document.getElementById('themis-section')?.scrollIntoView({ behavior: 'smooth' });
       }, 300);
 
-      return { success: false, disputeTriggered: true };
+      return { success: false, status: 'DISPUTE_TRIGGERED' };
     }
 
     try {
@@ -158,12 +164,12 @@ export default function App() {
         contractId: contract.contractId,
         milestoneIndex: index + 1,
         deliverable,
-        supplierWallet: contract.supplier?.wallet || 'billing@aetheria-cloud.ai',
+        supplierWallet: contract.supplier?.wallet,
         amount: deliverable.amount,
         simulateFailure: false
       });
 
-      if (res?.success) {
+      if (res.success) {
         const updated = [...deliverables];
         updated[index] = {
           ...updated[index],
@@ -173,38 +179,58 @@ export default function App() {
         };
         setDeliverables(updated);
         loadInitialData();
-        return res;
       }
+      return res;
     } catch (err) {
-      alert('Verification error: ' + err.message);
+      alert('Verification or payout failed: ' + err.message);
+      return { success: false, error: err.message };
     }
   };
 
   // Run Themis AI Arbitration Court
   const handleRunArbitration = async () => {
-    if (!contract) return;
     setIsArbitrating(true);
 
     try {
+      const contractId = contract?.contractId || 'NP-CTR-DISPUTE-DEMO';
+      const agreedAmount = contract?.agreedAmount || 1950.00;
       const remainingEscrow = deliverables
         .filter(d => d.status !== 'VERIFIED_RELEASED')
         .reduce((sum, d) => sum + d.amount, 0);
 
       const ruling = await agentService.arbitrate({
-        contractId: contract.contractId,
+        contractId: contractId,
         disputeReason: disputeData?.reason || 'SLA Latency Violation',
-        agreedAmount: contract.agreedAmount,
-        totalEscrowRemaining: remainingEscrow || contract.agreedAmount * 0.75,
-        captureId: contract.paypalOrder?.id || 'CAP-8921-DEMO'
+        agreedAmount: agreedAmount,
+        totalEscrowRemaining: remainingEscrow || agreedAmount * 0.75,
+        captureId: contract?.paypalOrder?.id || 'CAP-8921-DEMO',
+        breachEvidence: {
+          observedLatency: 184.2,
+          ceilingLatency: 35.0,
+          droppedBatches: 4
+        }
       });
 
       setArbitrationRuling(ruling);
 
-      const updated = deliverables.map(d => ({
-        ...d,
-        status: d.status === 'VERIFIED_RELEASED' ? 'VERIFIED_RELEASED' : 'ARBITRATED_SETTLED'
-      }));
+      const updated = deliverables.length > 0
+        ? deliverables.map(d => ({
+            ...d,
+            status: d.status === 'VERIFIED_RELEASED' ? 'VERIFIED_RELEASED' : 'ARBITRATED_SETTLED'
+          }))
+        : [
+            { id: 'M1', name: 'Milestone 1: Attack Reconnaissance', status: 'VERIFIED_RELEASED', amount: 585.00 },
+            { id: 'M2', name: 'Milestone 2: Payload Fuzzing (Breached)', status: 'ARBITRATED_SETTLED', amount: 780.00 },
+            { id: 'M3', name: 'Milestone 3: Executive Remediation', status: 'ARBITRATED_SETTLED', amount: 585.00 }
+          ];
       setDeliverables(updated);
+
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.55 },
+        colors: ['#F43F5E', '#0070BA', '#38BDF8', '#10B981']
+      });
 
       loadInitialData();
     } catch (err) {
@@ -262,6 +288,7 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDocs={() => setIsDocsOpen(true)}
         treasury={treasury}
+        onOpenTour={() => setIsTourOpen(true)}
       />
 
       {/* Main Workspace Column */}
@@ -275,6 +302,7 @@ export default function App() {
           isNegotiating={isNegotiating}
           onRefresh={loadInitialData}
           treasury={treasury}
+          onOpenTour={() => setIsTourOpen(true)}
         />
 
         {/* View Content Body */}
@@ -286,7 +314,7 @@ export default function App() {
               contract={contract}
               deliverables={deliverables}
               isNegotiating={isNegotiating}
-              onRunNegotiation={() => handleRunNegotiation()}
+              onRunNegotiation={handleRunNegotiation}
               onVerifyMilestone={handleVerifyMilestone}
               onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
               isOrderCaptured={isOrderCaptured}
@@ -300,6 +328,9 @@ export default function App() {
               transactions={transactions}
               onRowAction={handleRowAction}
               onNavigateToTab={setActiveTab}
+              selectedScenario={selectedScenario}
+              onSelectScenario={handleSelectScenario}
+              onAddTransaction={(newTxn) => setTransactions(prev => [newTxn, ...prev])}
             />
           )}
 
@@ -309,8 +340,10 @@ export default function App() {
               <NegotiationArena
                 contract={contract}
                 isNegotiating={isNegotiating}
-                onRunNegotiation={() => handleRunNegotiation()}
+                onRunNegotiation={handleRunNegotiation}
                 onProceedToEscrow={() => setActiveTab('escrow')}
+                selectedScenario={selectedScenario}
+                onSelectScenario={handleSelectScenario}
               />
             </div>
           )}
@@ -337,6 +370,7 @@ export default function App() {
               <AgentTelemetryGrid
                 transactions={transactions}
                 onRowAction={handleRowAction}
+                onAddTransaction={(newTxn) => setTransactions(prev => [newTxn, ...prev])}
               />
             </div>
           )}
@@ -344,7 +378,10 @@ export default function App() {
           {/* TAB 5: Bryntum Milestone Gantt */}
           {activeTab === 'bryntum' && (
             <div className="animate-fade-in">
-              <BryntumGanttView onTriggerMilestonePayout={handleBryntumPayout} />
+              <BryntumGanttView 
+                onTriggerMilestonePayout={handleBryntumPayout} 
+                onNavigateToArbitration={() => setActiveTab('themis')}
+              />
             </div>
           )}
 
@@ -400,6 +437,20 @@ export default function App() {
         contract={contract}
         onApproveEscrow={handleApproveEscrow}
         paypalClientId={paypalConfig?.clientId}
+      />
+
+      <JudgeTourModal
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        onRunNegotiation={handleRunNegotiation}
+        onOpenPayPalModal={() => setIsPayPalModalOpen(true)}
+        onVerifyMilestone={handleVerifyMilestone}
+        onEscalateToArbitration={() => setActiveTab('themis')}
+        onRunArbitration={handleRunArbitration}
+        deliverables={deliverables}
+        contract={contract}
       />
 
       <SettingsDrawer
