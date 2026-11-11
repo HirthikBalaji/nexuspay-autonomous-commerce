@@ -1,0 +1,38 @@
+{
+  "name": "nexuspay",
+  "version": "1.0.0",
+  "description": "NexusPay: Autonomous Multi-Agent Commerce, Smart Escrow & Clearinghouse for PayPal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,cyan\" \"node server/server.js\" \"vite\"",
+    "client": "vite",
+    "server": "node server/server.js",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "NODE_ENV=production node server/server.js"
+  },
+  "dependencies": {
+    "@paypal/react-paypal-js": "^8.7.0",
+    "ag-grid-community": "^36.3.0",
+    "ag-grid-react": "^36.3.0",
+    "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.4",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.14"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "apimatic": {
+    "version": "1.0",
+    "specification": "./server/openapi.json",
+    "codegen": {
+      "languages": ["python", "typescript", "csharp", "java", "go"],
+      "generateModelValidation": true,
+      "sdkName": "NexusPayAgentClient"
+    },
+    "documentation": {
+      "theme": "dark",
+      "brandColor": "#0079C1",
+      "title": "NexusPay Autonomous Agent Commerce SDK"
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NexusPay Autonomous Agent Commerce Protocol",
+    "version": "1.0.0",
+    "description": "Enterprise-grade protocol & REST clearinghouse for autonomous AI multi-agent commerce, smart milestone escrows, and AI dispute arbitration built on PayPal developer rails.",
+    "contact": {
+      "name": "NexusPay Core Engineering",
+      "url": "https://github.com/HirthikBalaji/nexuspay-autonomous-commerce"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development / Sandbox Gateway"
+    },
+    {
+      "url": "https://nexuspay.onrender.com",
+      "description": "Render Production Cloud Deployment"
+    }
+  ],
+  "paths": {
+    "/api/agent/negotiate": {
+      "post": {
+        "summary": "Execute Multi-Agent Negotiation & Smart Contract Generation",
+        "operationId": "negotiateContract",
+        "description": "Orchestrates multi-turn negotiation between Atlas (Buyer Agent) and Hermes (Supplier Agent), calculates convergence, and creates a PayPal Orders v2 escrow intent.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scenarioId": { "type": "string", "example": "gpu_procurement" },
+                  "customTask": {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "budget": { "type": "number" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract negotiated with PayPal order initialization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contractId": { "type": "string" },
+                    "agreedAmount": { "type": "number" },
+                    "paypalOrder": { "type": "object" },
+                    "deliverables": { "type": "array" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agent/verify-milestone": {
+      "post": {
+        "summary": "Verify Milestone Deliverable & Release PayPal Payout",
+        "operationId": "verifyMilestone",
+        "description": "Evaluates verifiable cryptographic proofs (hashes, SLA metrics) and triggers PayPal Payouts v1 API to release the milestone tranche.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contractId", "milestoneIndex", "amount", "supplierWallet"],
+                "properties": {
+                  "contractId": { "type": "string" },
+                  "milestoneIndex": { "type": "integer" },
+                  "deliverable": { "type": "object" },
+                  "supplierWallet": { "type": "string" },
+                  "amount": { "type": "number" },
+                  "simulateFailure": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Milestone verified and payout dispatched"
+          }
+        }
+      }
+    },
+    "/api/agent/arbitrate": {
+      "post": {
+        "summary": "Execute Themis AI Autonomous Arbitration Ruling",
+        "operationId": "arbitrateDispute",
+        "description": "Reviews multimodal contract breach evidence, computes fault proportion, and triggers PayPal Refund / Partial Payout remediation.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contractId", "agreedAmount", "totalEscrowRemaining"],
+                "properties": {
+                  "contractId": { "type": "string" },
+                  "disputeReason": { "type": "string" },
+                  "agreedAmount": { "type": "number" },
+                  "totalEscrowRemaining": { "type": "number" },
+                  "captureId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Binding arbitration ruling and executed PayPal settlement"
+          }
+        }
+      }
+    },
+    "/api/paypal/create-order": {
+      "post": {
+        "summary": "Create PayPal Order v2 for Agentic Escrow",
+        "operationId": "createPayPalOrder",
+        "responses": {
+          "200": { "description": "PayPal Order Created" }
+        }
+      }
+    },
+    "/api/paypal/capture-order": {
+      "post": {
+        "summary": "Capture PayPal Order into Nexus Escrow Vault",
+        "operationId": "capturePayPalOrder",
+        "responses": {
+          "200": { "description": "PayPal Order Captured" }
+        }
+      }
+    },
+    "/api/paypal/payout-milestone": {
+      "post": {
+        "summary": "Execute PayPal Payouts v1 Milestone Tranche",
+        "operationId": "payoutMilestone",
+        "responses": {
+          "200": { "description": "PayPal Payout Dispatched" }
+        }
+      }
+    },
+    "/api/paypal/webhooks": {
+      "post": {
+        "summary": "Ingest Incoming PayPal Cloud Webhooks",
+        "operationId": "receiveWebhook",
+        "responses": {
+          "200": { "description": "Webhook Acknowledged" }
+        }
+      }
+    },
+    "/api/telemetry/transactions": {
+      "get": {
+        "summary": "Stream Real-time AG Grid Telemetry Feed",
+        "operationId": "getTelemetryTransactions",
+        "responses": {
+          "200": { "description": "List of active transactions and telemetry" }
+        }
+      }
+    },
+    "/api/telemetry/treasury": {
+      "get": {
+        "summary": "Get Global Agentic Treasury Balances & Escrow Metrics",
+        "operationId": "getTreasuryStats",
+        "responses": {
+          "200": { "description": "Global Treasury Metrics" }
+        }
+      }
+    }
+  }
+}
