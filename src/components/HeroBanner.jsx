@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, ShieldAlert, Sparkles, Play, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Cpu, ShieldAlert, Sparkles, Play, ArrowRight, ShieldCheck, CheckCircle2, Lock } from 'lucide-react';
 
 export default function HeroBanner({ 
   selectedScenario, 
@@ -9,44 +9,45 @@ export default function HeroBanner({
   onScrollToGrid 
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#0f172a]/90 via-[#0a0f1d] to-[#080C14] border border-slate-800/80 p-6 md:p-8 my-6 shadow-2xl">
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-paypal-light/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
-      <div className="absolute -bottom-10 left-10 w-80 h-80 bg-paypal-cyan/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0F172A]/90 via-[#0C1222] to-[#080C16] border border-white/[0.08] p-6 sm:p-8 my-5 shadow-2xl">
+      {/* Subtle ambient lighting */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0070BA]/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
+      <div className="absolute -bottom-10 left-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
 
       <div className="relative z-10">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-paypal-cyan/10 border border-paypal-cyan/30 text-paypal-cyan text-xs font-medium mb-3">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold mb-3.5">
               <Sparkles className="w-3.5 h-3.5" />
-              PayPal AI Hackathon 2026 • Grand Prize Contender
+              <span>PayPal AI Hackathon 2026 • Grand Prize Architecture</span>
             </div>
             
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white tracking-tight leading-[1.15]">
               The Trust & Liquidity Protocol for the{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paypal-cyan via-sky-400 to-paypal-light">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-blue-400 to-[#0070BA]">
                 Autonomous Agent Economy
               </span>
             </h2>
 
-            <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+            <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
               When AI agents procure servers, hire specialists, and trade data autonomously, giving them open wallets is financial suicide. 
-              <strong className="text-white font-medium"> NexusPay</strong> introduces cryptographic spend covenants, real-time agent-to-agent contract negotiation, 
-              and <strong className="text-white font-medium">PayPal Milestone Smart Escrow</strong> with sub-second <strong className="text-paypal-cyan font-medium">Themis AI Dispute Arbitration</strong>.
+              <strong className="text-white font-medium"> NexusPay</strong> establishes cryptographic spend covenants, real-time agent contract negotiation, 
+              and <strong className="text-white font-medium">PayPal Milestone Smart Escrow</strong> with sub-second <strong className="text-sky-400 font-medium">Themis AI Dispute Arbitration</strong>.
             </p>
 
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-400">
+            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs">
               <span className="flex items-center gap-1.5 text-slate-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Zero-Trust Spend Mandates
+                <span>Zero-Trust Spend Mandates</span>
               </span>
               <span className="flex items-center gap-1.5 text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-paypal-cyan" />
-                PayPal Orders v2 & Payouts API
+                <CheckCircle2 className="w-4 h-4 text-sky-400" />
+                <span>PayPal Orders v2 & Payouts API</span>
               </span>
               <span className="flex items-center gap-1.5 text-slate-300">
                 <CheckCircle2 className="w-4 h-4 text-amber-400" />
-                AG Grid Real-time Telemetry
+                <span>AG Grid Real-time Telemetry</span>
               </span>
             </div>
           </div>
@@ -56,49 +57,49 @@ export default function HeroBanner({
             <button
               onClick={onRunNegotiation}
               disabled={isNegotiating}
-              className={`flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white transition-all shadow-lg ${
+              className={`flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-semibold text-white transition-all shadow-lg ${
                 isNegotiating
-                  ? 'bg-paypal-light/50 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-paypal-dark via-paypal-light to-paypal-cyan hover:shadow-paypal-light/30 hover:scale-[1.02] active:scale-[0.98]'
+                  ? 'bg-[#0070BA]/50 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-[#0070BA] to-sky-500 hover:brightness-110 shadow-[#0070BA]/30 hover:scale-[1.01] active:scale-[0.98]'
               }`}
             >
               <Play className={`w-4 h-4 fill-white ${isNegotiating ? 'animate-spin' : ''}`} />
-              {isNegotiating ? 'Agents Negotiating...' : 'Launch Agent Negotiation'}
+              <span>{isNegotiating ? 'Agents Negotiating...' : 'Launch Agent Negotiation'}</span>
             </button>
 
             <button
               onClick={onScrollToGrid}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium bg-slate-900/90 text-slate-300 border border-slate-700/80 hover:bg-slate-800 hover:text-white transition-all"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm font-medium bg-slate-900/80 text-slate-300 border border-white/[0.08] hover:bg-slate-800 hover:text-white transition-all"
             >
-              <span>Explore AG Grid Live Fleet</span>
+              <span>Explore AG Grid Fleet</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         {/* Interactive Scenario Presets */}
-        <div className="mt-8 pt-6 border-t border-slate-800/80">
-          <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">
+        <div className="mt-8 pt-6 border-t border-white/[0.06]">
+          <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-3">
             Select Live Demonstration Scenario:
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {/* Scenario 1 */}
             <div
               onClick={() => onSelectScenario('gpu_procurement')}
-              className={`cursor-pointer p-4 rounded-xl border transition-all ${
+              className={`cursor-pointer p-4 rounded-2xl border transition-all duration-150 ${
                 selectedScenario === 'gpu_procurement'
-                  ? 'bg-gradient-to-r from-paypal-dark/30 to-slate-900 border-paypal-cyan shadow-md shadow-paypal-cyan/10'
-                  : 'bg-[#0a0f1d] border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/50'
+                  ? 'bg-[#0D1528] border-sky-500/60 shadow-lg shadow-sky-500/10 ring-1 ring-sky-500/20'
+                  : 'bg-slate-900/50 border-white/[0.06] hover:border-white/20 hover:bg-slate-900/80'
               }`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-paypal-cyan/10 text-paypal-cyan">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2.5 rounded-xl ${selectedScenario === 'gpu_procurement' ? 'bg-sky-500/20 text-sky-400' : 'bg-slate-800 text-slate-400'}`}>
                     <Cpu className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">
+                    <h4 className="text-sm font-bold text-white">
                       Scenario A: H100 GPU Cluster Procurement
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
@@ -106,8 +107,8 @@ export default function HeroBanner({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  HAPPY PATH
+                <span className="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shrink-0">
+                  Clean Settlement
                 </span>
               </div>
             </div>
@@ -115,19 +116,19 @@ export default function HeroBanner({
             {/* Scenario 2 */}
             <div
               onClick={() => onSelectScenario('ai_security_audit')}
-              className={`cursor-pointer p-4 rounded-xl border transition-all ${
+              className={`cursor-pointer p-4 rounded-2xl border transition-all duration-150 ${
                 selectedScenario === 'ai_security_audit'
-                  ? 'bg-gradient-to-r from-red-950/20 to-slate-900 border-red-500 shadow-md shadow-red-500/10'
-                  : 'bg-[#0a0f1d] border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/50'
+                  ? 'bg-[#181122] border-rose-500/60 shadow-lg shadow-rose-500/10 ring-1 ring-rose-500/20'
+                  : 'bg-slate-900/50 border-white/[0.06] hover:border-white/20 hover:bg-slate-900/80'
               }`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-red-500/10 text-red-400">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2.5 rounded-xl ${selectedScenario === 'ai_security_audit' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800 text-slate-400'}`}>
                     <ShieldAlert className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">
+                    <h4 className="text-sm font-bold text-white">
                       Scenario B: AI Security Red-Teaming Audit
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">
@@ -135,8 +136,8 @@ export default function HeroBanner({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/30">
-                  DISPUTE & ARBITRATION
+                <span className="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 shrink-0">
+                  Dispute & Arbitration
                 </span>
               </div>
             </div>

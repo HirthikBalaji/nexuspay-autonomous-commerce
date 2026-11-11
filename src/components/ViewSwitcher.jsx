@@ -3,40 +3,44 @@ import { Shield, Layers, Clock, ShoppingCart, Search, Terminal } from 'lucide-re
 
 export default function ViewSwitcher({ activeTab, onSelectTab }) {
   const tabs = [
-    { id: 'escrow', label: 'PayPal Smart Escrow & Agents', icon: Shield, badge: 'Core' },
-    { id: 'grid', label: 'AG Grid Fleet Telemetry', icon: Layers, badge: '$5K Prize' },
-    { id: 'bryntum', label: 'Bryntum Milestone Gantt', icon: Clock, badge: 'Scheduler' },
-    { id: 'channel3', label: 'Channel3 Commerce Catalog', icon: ShoppingCart, badge: 'Catalog' },
-    { id: 'elastic', label: 'Elastic Intelligence & Logs', icon: Search, badge: 'Search' },
-    { id: 'devhub', label: 'Postman & APIMatic DevHub', icon: Terminal, badge: 'API Runner' }
+    { id: 'escrow', label: 'Smart Escrow & Agents', icon: Shield, badge: 'Core' },
+    { id: 'grid', label: 'AG Grid Telemetry', icon: Layers, badge: '$5K Prize' },
+    { id: 'bryntum', label: 'Bryntum Gantt', icon: Clock, badge: 'Gantt' },
+    { id: 'channel3', label: 'Channel3 Catalog', icon: ShoppingCart, badge: 'Commerce' },
+    { id: 'elastic', label: 'Elastic Intelligence', icon: Search, badge: 'Search' },
+    { id: 'devhub', label: 'Postman & APIMatic', icon: Terminal, badge: 'API Hub' }
   ];
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto py-2 my-4 scrollbar-none border-b border-slate-800">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
-        const isActive = activeTab === tab.id;
+    <div className="w-full my-5 overflow-x-auto scrollbar-none pb-1">
+      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/80 border border-white/[0.07] backdrop-blur-lg w-max sm:w-full justify-between">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
 
-        return (
-          <button
-            key={tab.id}
-            onClick={() => onSelectTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
-              isActive
-                ? 'bg-gradient-to-r from-paypal-dark to-slate-900 border-paypal-cyan text-white shadow-lg shadow-paypal-cyan/10 scale-[1.02]'
-                : 'bg-[#0D1424] border-slate-800/80 text-slate-400 hover:text-white hover:border-slate-700'
-            }`}
-          >
-            <Icon className={`w-4 h-4 ${isActive ? 'text-paypal-cyan' : 'text-slate-400'}`} />
-            <span>{tab.label}</span>
-            <span className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded ${
-              isActive ? 'bg-paypal-cyan/20 text-paypal-cyan' : 'bg-slate-800 text-slate-400'
-            }`}>
-              {tab.badge}
-            </span>
-          </button>
-        );
-      })}
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onSelectTab(tab.id)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 flex-1 justify-center ${
+                isActive
+                  ? 'bg-[#151e33] text-white shadow-md border border-white/10 ring-1 ring-white/5'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+              }`}
+            >
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-sky-400' : 'text-slate-400'}`} />
+              <span className="font-medium">{tab.label}</span>
+              <span className={`text-[9px] font-mono tracking-wider uppercase px-1.5 py-0.5 rounded-md ${
+                isActive 
+                  ? 'bg-sky-500/15 text-sky-400 border border-sky-500/30' 
+                  : 'bg-slate-800 text-slate-400'
+              }`}>
+                {tab.badge}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

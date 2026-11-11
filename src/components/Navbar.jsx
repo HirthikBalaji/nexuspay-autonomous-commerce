@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Zap, Lock, Terminal, FileCode, Settings, AlertOctagon, RefreshCw } from 'lucide-react';
+import { Shield, Zap, Lock, Terminal, FileCode, Settings, AlertOctagon, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function Navbar({ 
@@ -11,105 +11,98 @@ export default function Navbar({
   onRefresh 
 }) {
   return (
-    <header className="sticky top-0 z-40 bg-[#080C14]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3 transition-all">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 bg-[#080C16]/85 backdrop-blur-xl border-b border-white/[0.06] transition-all">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between gap-4">
         
         {/* Brand & Identity */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-paypal-dark via-paypal-light to-paypal-cyan p-0.5 shadow-lg shadow-paypal-light/20">
-            <div className="w-full h-full bg-[#080C14] rounded-[10px] flex items-center justify-center">
-              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-paypal-cyan to-white text-xl">
+        <div className="flex items-center gap-3.5">
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#0070BA] via-[#003087] to-[#1E293B] p-[1px] shadow-sm shadow-[#0070BA]/30">
+            <div className="w-full h-full bg-[#0B0F19] rounded-[11px] flex items-center justify-center">
+              <span className="font-mono font-black text-transparent bg-clip-text bg-gradient-to-tr from-sky-400 via-white to-blue-200 text-base leading-none">
                 Ψ
               </span>
             </div>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-paypal-cyan rounded-full animate-ping opacity-75"></div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#080C16]"></span>
           </div>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-                NEXUS<span className="text-paypal-cyan">PAY</span>
-              </h1>
-              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-paypal-light/20 text-paypal-cyan border border-paypal-light/30">
-                Autonomous Escrow v1.0
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Multi-Agent Commerce Clearinghouse on PayPal Developer Platform
-            </p>
+          <div className="flex items-center gap-2">
+            <span className="text-base font-extrabold tracking-tight text-white font-sans">
+              NEXUS<span className="text-sky-400">PAY</span>
+            </span>
+            <span className="hidden sm:inline-flex items-center text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              Agentic Escrow
+            </span>
           </div>
         </div>
 
-        {/* Real-time Status Badges */}
-        <div className="hidden lg:flex items-center gap-2 bg-[#0c1220] px-3 py-1.5 rounded-lg border border-slate-800">
-          <div className="flex items-center gap-1.5 text-xs text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        {/* Center Live System Signals (Discrete & Elegant) */}
+        <div className="hidden lg:flex items-center gap-4 bg-slate-900/60 border border-white/[0.06] px-3.5 py-1.5 rounded-full text-[11px] text-slate-300">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="text-slate-400">PayPal:</span>
-            <span className="font-mono text-emerald-400 font-medium">Orders v2 + Payouts</span>
+            <span className="font-mono text-slate-200 font-medium">Orders v2</span>
           </div>
-          <span className="text-slate-700">|</span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-paypal-cyan animate-pulse"></span>
-            <span className="text-slate-400">AI Arbiter:</span>
-            <span className="font-mono text-paypal-cyan font-medium">Themis Armed</span>
+          <span className="text-slate-700">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+            <span className="text-slate-400">Arbiter:</span>
+            <span className="font-mono text-slate-200 font-medium">Themis AI</span>
           </div>
-          <span className="text-slate-700">|</span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-            <span className="text-slate-400">Grid:</span>
-            <span className="font-mono text-amber-400 font-medium">AG Grid v36</span>
+          <span className="text-slate-700">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span className="text-slate-400">Telemetry:</span>
+            <span className="font-mono text-slate-200 font-medium">AG Grid v36</span>
           </div>
         </div>
 
         {/* Live Treasury & Action Controls */}
-        <div className="flex items-center gap-3">
-          {/* Treasury Quick Stat */}
-          <div className="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg text-right hidden sm:block">
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">
-              Escrow In-Flight
-            </div>
-            <div className="font-mono text-sm font-semibold text-white">
+        <div className="flex items-center gap-2.5">
+          {/* Treasury Escrow Pill */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs">
+            <span className="text-slate-400 text-[11px]">Escrow:</span>
+            <span className="font-mono font-bold text-sky-400">
               {formatCurrency(treasury?.totalEscrowLocked || 4100)}
-            </div>
+            </span>
           </div>
 
-          {/* Emergency Killswitch / Freeze */}
+          {/* Emergency Panic Freeze */}
           <button
             onClick={onToggleFreeze}
-            title={emergencyFreeze ? "Emergency freeze active! Click to unfreeze agent fleet." : "Activate Emergency Circuit Breaker (Freeze all autonomous spending)"}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+            title={emergencyFreeze ? "Emergency freeze active! Click to unfreeze fleet." : "Emergency Freeze: Pause all autonomous agent spending"}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
               emergencyFreeze 
-                ? 'bg-red-600 text-white animate-bounce shadow-lg shadow-red-600/50' 
-                : 'bg-red-950/40 text-red-400 border border-red-800/60 hover:bg-red-900/40 hover:text-red-300'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/40 animate-pulse' 
+                : 'bg-slate-900/80 text-rose-400 border border-rose-500/30 hover:bg-rose-950/40 hover:border-rose-500/50'
             }`}
           >
-            <AlertOctagon className="w-4 h-4" />
-            <span className="hidden sm:inline">{emergencyFreeze ? 'Fleet Frozen' : 'Panic Freeze'}</span>
+            <AlertOctagon className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">{emergencyFreeze ? 'Fleet Frozen' : 'Panic Freeze'}</span>
           </button>
 
           {/* Refresh Data */}
           <button
             onClick={onRefresh}
-            className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title="Refresh All Telemetry & Balances"
+            className="p-2 rounded-xl bg-slate-900/80 border border-white/[0.06] text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            title="Refresh Data & Balances"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
 
-          {/* APIMatic & OpenAPI Docs */}
+          {/* OpenAPI / APIMatic Specs */}
           <button
             onClick={onOpenDocs}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs font-medium text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
           >
-            <FileCode className="w-4 h-4 text-paypal-cyan" />
-            <span className="hidden md:inline">OpenAPI / APIMatic</span>
+            <FileCode className="w-3.5 h-3.5 text-sky-400" />
+            <span>API Docs</span>
           </button>
 
-          {/* Settings / PayPal Sandbox config */}
+          {/* Settings */}
           <button
             onClick={onOpenSettings}
-            className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title="Configure PayPal Sandbox Credentials & View Webhooks"
+            className="p-2 rounded-xl bg-slate-900/80 border border-white/[0.06] text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            title="Configure PayPal Credentials & Webhooks"
           >
             <Settings className="w-4 h-4 text-slate-300" />
           </button>

@@ -1,49 +1,46 @@
 import React from 'react';
-import { Sparkles, CheckCircle2, Shield, Layers, FileCode, Clock, ShoppingCart, Search, Terminal } from 'lucide-react';
+import { Sparkles, Shield, Layers, Clock, ShoppingCart, Search, FileCode, Check } from 'lucide-react';
 
 export default function SponsorBar({ activeTab, onSelectTab }) {
   const sponsors = [
-    { id: 'paypal', name: 'PayPal Developer', role: 'Orders v2 & Payouts v1 Rail', tab: 'escrow', color: 'from-blue-600 to-paypal-light', icon: Shield },
-    { id: 'aggrid', name: 'AG Grid', role: 'Enterprise Telemetry Grid', tab: 'grid', color: 'from-amber-500 to-yellow-400', icon: Layers },
-    { id: 'bryntum', name: 'Bryntum', role: 'Gantt & Milestone Scheduler', tab: 'bryntum', color: 'from-emerald-500 to-teal-400', icon: Clock },
-    { id: 'channel3', name: 'Channel3', role: 'AI Agent Commerce Catalog', tab: 'channel3', color: 'from-purple-500 to-indigo-400', icon: ShoppingCart },
-    { id: 'elastic', name: 'Elastic', role: 'Vector Search & Anomaly Log', tab: 'elastic', color: 'from-cyan-500 to-sky-400', icon: Search },
-    { id: 'apimatic', name: 'APIMatic & Postman', role: 'OpenAPI 3.1 & SDK DevHub', tab: 'devhub', color: 'from-orange-500 to-rose-400', icon: FileCode }
+    { id: 'paypal', name: 'PayPal', detail: 'Orders & Payouts v1', tab: 'escrow', color: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
+    { id: 'aggrid', name: 'AG Grid', detail: 'Telemetry Engine', tab: 'grid', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+    { id: 'bryntum', name: 'Bryntum', detail: 'Milestone Gantt', tab: 'bryntum', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+    { id: 'channel3', name: 'Channel3', detail: 'Agent Catalog', tab: 'channel3', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+    { id: 'elastic', name: 'Elastic', detail: 'Vector Intelligence', tab: 'elastic', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' },
+    { id: 'apimatic', name: 'Postman & APIMatic', detail: 'DevHub & SDKs', tab: 'devhub', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' }
   ];
 
   return (
-    <div className="bg-[#0b101d] border-y border-slate-800/80 py-2.5 px-4 lg:px-8 overflow-x-auto scrollbar-none">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 min-w-[780px]">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 shrink-0">
-          <Sparkles className="w-4 h-4 text-paypal-cyan" />
-          <span>Integrated Sponsor Suite:</span>
+    <div className="border-b border-white/[0.04] bg-[#070B14]/60 py-2 px-4 lg:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto scrollbar-none">
+        
+        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 shrink-0">
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <span>Sponsor Ecosystem:</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {sponsors.map((s) => {
-            const Icon = s.icon;
             const isActive = activeTab === s.tab;
             return (
               <button
                 key={s.id}
                 onClick={() => onSelectTab(s.tab)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all border ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border shrink-0 ${
                   isActive
-                    ? 'bg-slate-800 border-paypal-cyan text-white shadow-md shadow-paypal-cyan/20 scale-[1.03]'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                    ? 'bg-slate-800 text-white border-white/20 shadow-sm'
+                    : 'bg-transparent text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-900/60'
                 }`}
               >
-                <div className={`p-1 rounded bg-gradient-to-br ${s.color} text-white`}>
-                  <Icon className="w-3 h-3" />
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-white leading-none">{s.name}</div>
-                  <div className="text-[10px] text-slate-400 leading-tight">{s.role}</div>
-                </div>
+                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-sky-400' : 'bg-slate-600'}`}></span>
+                <span className="font-semibold text-slate-200">{s.name}</span>
+                <span className="text-[10px] text-slate-400 hidden xl:inline">({s.detail})</span>
               </button>
             );
           })}
         </div>
+
       </div>
     </div>
   );

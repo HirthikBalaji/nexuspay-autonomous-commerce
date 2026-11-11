@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import { Search, Download, ShieldAlert, CheckCircle, PauseCircle, PlayCircle, Zap, RefreshCw } from 'lucide-react';
+import { Search, Download, PauseCircle, PlayCircle, Zap, Shield, Sparkles } from 'lucide-react';
 import { formatCurrency, formatRelativeTime } from '../utils/formatters';
 
 // Register AG Grid Community modules
@@ -12,20 +12,20 @@ ModuleRegistry.registerModules([AllCommunityModule]);
  */
 function RiskScoreRenderer(params) {
   const score = params.value || 0;
-  let colorClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+  let colorClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
   let dotColor = 'bg-emerald-400';
 
   if (score > 60) {
-    colorClass = 'bg-red-500/10 text-red-400 border-red-500/30 animate-pulse';
-    dotColor = 'bg-red-400';
+    colorClass = 'bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pulse';
+    dotColor = 'bg-rose-400';
   } else if (score > 20) {
-    colorClass = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+    colorClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
     dotColor = 'bg-amber-400';
   }
 
   return (
     <div className="flex items-center gap-1.5 h-full">
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-bold border ${colorClass}`}>
+      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono font-bold border ${colorClass}`}>
         <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
         {score}/100
       </span>
@@ -41,14 +41,14 @@ function MilestoneStageRenderer(params) {
   const isCompleted = stage === 'Completed';
   const isArbitrated = stage.includes('Arbitration') || stage.includes('Refunded');
 
-  let badgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
-  if (isCompleted) badgeColor = 'bg-emerald-950/40 text-emerald-400 border-emerald-800';
-  else if (isArbitrated) badgeColor = 'bg-red-950/40 text-red-400 border-red-800';
-  else if (stage.includes('Locked')) badgeColor = 'bg-paypal-light/20 text-paypal-cyan border-paypal-light/30';
+  let badgeColor = 'bg-slate-800/80 text-slate-300 border-white/[0.06]';
+  if (isCompleted) badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+  else if (isArbitrated) badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+  else if (stage.includes('Locked')) badgeColor = 'bg-sky-500/10 text-sky-400 border-sky-500/30';
 
   return (
     <div className="flex items-center h-full">
-      <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${badgeColor}`}>
+      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${badgeColor}`}>
         {stage}
       </span>
     </div>
@@ -69,21 +69,21 @@ function ActionCellRenderer(params) {
       <button
         onClick={() => context.onRowAction(data.id, isFrozen ? 'UNFREEZE' : 'FREEZE_AGENT')}
         title={isFrozen ? 'Unfreeze Agent' : 'Emergency Freeze Agent'}
-        className={`p-1 rounded text-xs font-semibold transition-colors ${
+        className={`p-1.5 rounded-lg text-xs font-semibold transition-all ${
           isFrozen 
             ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30' 
-            : 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
+            : 'bg-slate-800 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
         }`}
       >
-        {isFrozen ? <PlayCircle className="w-4 h-4" /> : <PauseCircle className="w-4 h-4" />}
+        {isFrozen ? <PlayCircle className="w-3.5 h-3.5" /> : <PauseCircle className="w-3.5 h-3.5" />}
       </button>
 
       <button
         onClick={() => context.onRowAction(data.id, 'OVERRIDE_RELEASE')}
         title="Manual PayPal Release Override"
-        className="p-1 rounded bg-paypal-cyan/10 text-paypal-cyan hover:bg-paypal-cyan/20 transition-colors"
+        className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 transition-all"
       >
-        <Zap className="w-4 h-4" />
+        <Zap className="w-3.5 h-3.5" />
       </button>
     </div>
   );
@@ -144,7 +144,7 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
       headerName: 'Amount',
       width: 130,
       valueFormatter: (params) => formatCurrency(params.value),
-      cellClass: 'font-mono font-semibold text-emerald-400',
+      cellClass: 'font-mono font-bold text-emerald-400',
     },
     {
       field: 'milestoneStage',
@@ -154,7 +154,7 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
     },
     {
       field: 'riskScore',
-      headerName: 'AI Risk Gauge',
+      headerName: 'Risk Gauge',
       width: 130,
       cellRenderer: RiskScoreRenderer,
     },
@@ -173,14 +173,14 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
       headerName: 'PayPal Ref',
       width: 160,
       cellRenderer: (params) => (
-        <span className="font-mono text-xs text-paypal-cyan underline decoration-dotted cursor-pointer">
+        <span className="font-mono text-xs text-sky-400 underline decoration-dotted cursor-pointer">
           {params.value}
         </span>
       ),
     },
     {
       headerName: 'Actions',
-      width: 110,
+      width: 100,
       pinned: 'right',
       cellRenderer: ActionCellRenderer,
     }
@@ -201,51 +201,51 @@ export default function AgentTelemetryGrid({ transactions, onRowAction }) {
   }, []);
 
   return (
-    <div id="telemetry-grid-section" className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 my-6 shadow-xl">
+    <div id="telemetry-grid-section" className="bg-[#0D1424] border border-white/[0.08] rounded-3xl p-6 my-5 shadow-xl">
       {/* Grid Controls Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-800 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-            <h3 className="text-lg font-bold text-white">Autonomous Agent Fleet Telemetry</h3>
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-              AG Grid v36 Enterprise Grade
+            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+            <h3 className="text-base font-bold text-white">Autonomous Agent Fleet Telemetry</h3>
+            <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              AG Grid v36
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-400 mt-0.5 font-normal">
             Real-time streaming ledger of autonomous transactions, risk telemetry, and circuit breaker controls
           </p>
         </div>
 
         {/* Search & Export Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {/* Quick Filter Search */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search agents, hash, status..."
+              placeholder="Filter agents, hash, status..."
               value={quickFilterText}
               onChange={(e) => setQuickFilterText(e.target.value)}
-              className="pl-9 pr-3 py-1.5 text-xs bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-paypal-cyan w-48 sm:w-64 transition-all"
+              className="pl-8 pr-3 py-1.5 text-xs bg-slate-900/90 border border-white/[0.08] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 w-44 sm:w-56 transition-all"
             />
           </div>
 
           {/* Export CSV */}
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/[0.08] hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
             title="Export Grid Data as CSV"
           >
             <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <span className="hidden sm:inline">CSV</span>
           </button>
         </div>
       </div>
 
       {/* AG Grid Component */}
-      <div className="mt-5 w-full h-[460px]">
-        <div className="ag-theme-quartz-dark w-full h-full rounded-xl overflow-hidden shadow-2xl">
+      <div className="mt-4 w-full h-[460px]">
+        <div className="ag-theme-quartz-dark w-full h-full rounded-2xl overflow-hidden shadow-2xl">
           <AgGridReact
             ref={gridRef}
             rowData={transactions}

@@ -7,7 +7,6 @@ export default function PostmanApiRunner() {
   const [requestBody, setRequestBody] = useState(JSON.stringify({ scenarioId: 'gpu_procurement' }, null, 2));
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const endpoints = [
     {
@@ -113,29 +112,31 @@ export default function PostmanApiRunner() {
   const activeEp = endpoints.find(e => e.id === selectedEndpoint);
 
   return (
-    <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 my-6 shadow-xl">
+    <div className="bg-[#0D1424] border border-white/[0.08] rounded-3xl p-6 my-5 shadow-xl">
       {/* Header & Postman Download Button */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-800 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-orange-500/20 text-orange-400">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
               <Terminal className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                Postman API Runner & APIMatic DevHub
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30">
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-white">
+                  Postman API Runner & APIMatic DevHub
+                </h3>
+                <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30">
                   Postman v2.1
                 </span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5 font-normal">
                 Interactive request runner, OpenAPI 3.1 schema & 1-click Postman collection export
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <a
             href="/api/postman/collection"
             download="nexuspay_postman_collection.json"
@@ -149,9 +150,9 @@ export default function PostmanApiRunner() {
             href="/api/docs/openapi.json"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/[0.08] hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-colors"
           >
-            <FileCode className="w-3.5 h-3.5 text-paypal-cyan" />
+            <FileCode className="w-3.5 h-3.5 text-sky-400" />
             <span>OpenAPI 3.1 JSON</span>
           </a>
         </div>
@@ -161,7 +162,7 @@ export default function PostmanApiRunner() {
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Endpoint selector */}
         <div className="lg:col-span-4 space-y-2">
-          <div className="text-xs font-semibold uppercase text-slate-400 tracking-wider mb-2">
+          <div className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider mb-2">
             Select API Operation:
           </div>
 
@@ -169,15 +170,15 @@ export default function PostmanApiRunner() {
             <button
               key={ep.id}
               onClick={() => handleSelectEndpoint(ep.id)}
-              className={`w-full text-left p-3 rounded-xl border text-xs font-mono transition-all flex items-center justify-between ${
+              className={`w-full text-left p-3 rounded-2xl border text-xs font-mono transition-all flex items-center justify-between ${
                 selectedEndpoint === ep.id
-                  ? 'bg-orange-950/20 border-orange-500/60 text-white shadow-sm'
-                  : 'bg-[#0a0f1d] border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-orange-950/20 border-orange-500/50 text-white shadow-sm ring-1 ring-orange-500/20'
+                  : 'bg-[#0A0F1D] border-white/[0.06] text-slate-400 hover:text-slate-200 hover:border-white/15'
               }`}
             >
               <div className="flex items-center gap-2 truncate">
                 <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                  ep.method === 'POST' ? 'bg-blue-500/20 text-blue-400' : 'bg-emerald-500/20 text-emerald-400'
+                  ep.method === 'POST' ? 'bg-sky-500/20 text-sky-400' : 'bg-emerald-500/20 text-emerald-400'
                 }`}>
                   {ep.method}
                 </span>
@@ -190,19 +191,19 @@ export default function PostmanApiRunner() {
         {/* Right: Request & Response Area */}
         <div className="lg:col-span-8 space-y-4">
           {/* URL & Send Bar */}
-          <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800">
-            <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold ${
-              activeEp?.method === 'POST' ? 'bg-blue-600 text-white' : 'bg-emerald-600 text-white'
+          <div className="flex items-center gap-2 bg-slate-900/90 p-2 rounded-2xl border border-white/[0.08]">
+            <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${
+              activeEp?.method === 'POST' ? 'bg-[#0070BA] text-white' : 'bg-emerald-600 text-white'
             }`}>
               {activeEp?.method}
             </span>
-            <span className="font-mono text-xs text-slate-300 flex-1 truncate">
+            <span className="font-mono text-xs text-slate-300 flex-1 truncate px-1">
               {activeEp?.url}
             </span>
             <button
               onClick={handleSend}
               disabled={isLoading}
-              className="px-4 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 shrink-0"
+              className="px-4 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 shrink-0 shadow-sm"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{isLoading ? 'Sending...' : 'Send'}</span>
@@ -212,31 +213,31 @@ export default function PostmanApiRunner() {
           {/* Request Body (if POST) */}
           {activeEp?.method === 'POST' && (
             <div>
-              <div className="text-xs font-semibold text-slate-400 mb-1.5 font-mono">
+              <div className="text-[11px] font-semibold text-slate-400 mb-1.5 font-mono">
                 Request Payload (JSON):
               </div>
               <textarea
                 value={requestBody}
                 onChange={(e) => setRequestBody(e.target.value)}
                 rows={4}
-                className="w-full p-3 rounded-xl bg-black/50 border border-slate-800 font-mono text-xs text-slate-200 focus:outline-none focus:border-orange-500"
+                className="w-full p-3 rounded-2xl bg-black/40 border border-white/[0.06] font-mono text-xs text-slate-200 focus:outline-none focus:border-orange-500"
               />
             </div>
           )}
 
           {/* Live Response Box */}
           {response && (
-            <div className="p-4 rounded-xl bg-black/60 border border-slate-800 font-mono text-xs">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+            <div className="p-4 rounded-2xl bg-black/50 border border-white/[0.08] font-mono text-xs">
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    response.status < 300 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
+                    response.status < 300 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
                   }`}>
                     {response.status} {response.statusText}
                   </span>
                   <span className="text-slate-400 text-[11px]">{response.timeMs}ms</span>
                 </div>
-                <span className="text-[10px] text-slate-500">Live Express API</span>
+                <span className="text-[10px] text-slate-500">Express API</span>
               </div>
 
               <pre className="max-h-60 overflow-y-auto text-slate-300 text-[11px] leading-relaxed">

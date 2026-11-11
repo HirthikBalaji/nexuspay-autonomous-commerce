@@ -34,22 +34,24 @@ export default function ElasticSearchConsole() {
   };
 
   return (
-    <div className="bg-[#0D1424] border border-slate-800 rounded-2xl p-6 my-6 shadow-xl">
+    <div className="bg-[#0D1424] border border-white/[0.08] rounded-3xl p-6 my-5 shadow-xl">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-800 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <Search className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                Elastic Telemetry & Anomaly Intelligence
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-white">
+                  Elastic Telemetry & Anomaly Intelligence
+                </h3>
+                <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                   Elasticsearch DSL
                 </span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5 font-normal">
                 Full-text, vector search & anomaly scoring across agent negotiation contracts and SLA telemetry
               </p>
             </div>
@@ -57,8 +59,8 @@ export default function ElasticSearchConsole() {
         </div>
 
         {results && (
-          <div className="flex items-center gap-3 text-xs font-mono text-cyan-300 bg-cyan-950/30 px-3 py-1.5 rounded-lg border border-cyan-900/50">
-            <span>Query Took: {results.tookMs}ms</span>
+          <div className="flex items-center gap-3 text-xs font-mono text-cyan-300 bg-cyan-950/20 px-3 py-1.5 rounded-xl border border-cyan-800/40">
+            <span>Query: {results.tookMs}ms</span>
             <span className="text-slate-600">|</span>
             <span>Hits: {results.hits?.total?.value || 0}</span>
             <span className="text-slate-600">|</span>
@@ -68,7 +70,7 @@ export default function ElasticSearchConsole() {
       </div>
 
       {/* Search Input Bar & Index Selector */}
-      <div className="mt-5 flex flex-col sm:flex-row items-center gap-3">
+      <div className="mt-5 flex flex-col sm:flex-row items-center gap-2.5">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -77,14 +79,14 @@ export default function ElasticSearchConsole() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && executeSearch()}
             placeholder="Search Elastic logs, e.g. 'sla-breach', 'latency', 'H100'..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-white/[0.08] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono"
           />
         </div>
 
         <select
           value={selectedIndex}
           onChange={(e) => setSelectedIndex(e.target.value)}
-          className="w-full sm:w-auto px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
+          className="w-full sm:w-auto px-3 py-2.5 bg-slate-900/90 border border-white/[0.08] rounded-xl text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
         >
           <option value="all">Index: All Shards</option>
           <option value="nexus-agent-contracts">nexus-agent-contracts</option>
@@ -108,7 +110,7 @@ export default function ElasticSearchConsole() {
           <button
             key={tag}
             onClick={() => handleQuickSearch(tag)}
-            className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors shrink-0 border border-slate-700"
+            className="px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors shrink-0 border border-white/[0.04]"
           >
             "{tag}"
           </button>
@@ -124,34 +126,34 @@ export default function ElasticSearchConsole() {
           return (
             <div
               key={hit._id}
-              className={`p-4 rounded-xl border transition-all ${
+              className={`p-4 rounded-2xl border transition-all ${
                 isHighAnomaly
-                  ? 'bg-red-950/20 border-red-500/40 shadow-sm'
-                  : 'bg-[#0a0f1d] border-slate-800 hover:border-slate-700'
+                  ? 'bg-rose-950/15 border-rose-500/30 shadow-sm'
+                  : 'bg-[#0A0F1D] border-white/[0.06] hover:border-white/15'
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-bold text-white">{doc.title}</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
-                    index: {hit._index}
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-900 text-cyan-300 border border-white/[0.04]">
+                    {hit._index}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 font-mono text-[11px]">
                   <span className="text-slate-400">Score: {hit._score}</span>
                   <span className="text-slate-600">|</span>
-                  <span className={`font-bold ${isHighAnomaly ? 'text-red-400 animate-pulse' : 'text-emerald-400'}`}>
+                  <span className={`font-bold ${isHighAnomaly ? 'text-rose-400 animate-pulse' : 'text-emerald-400'}`}>
                     Anomaly: {(doc.anomalyScore * 100).toFixed(0)}%
                   </span>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed font-sans">
+              <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal">
                 {doc.content}
               </p>
 
-              <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 pt-2 border-t border-slate-800/60">
+              <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 pt-2 border-t border-white/[0.04]">
                 <div className="flex gap-1.5 flex-wrap">
                   {doc.tags.map((t) => (
                     <span key={t} className="text-slate-500">#{t}</span>
