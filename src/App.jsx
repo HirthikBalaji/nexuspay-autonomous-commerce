@@ -20,6 +20,9 @@ export default function App() {
   const [isOrderCaptured, setIsOrderCaptured] = useState(false);
   const [isNegotiating, setIsNegotiating] = useState(false);
 
+  // PayPal Sandbox configuration state
+  const [paypalConfig, setPaypalConfig] = useState(null);
+
   // Dispute & Arbitration state
   const [disputeData, setDisputeData] = useState(null);
   const [arbitrationRuling, setArbitrationRuling] = useState(null);
@@ -42,12 +45,14 @@ export default function App() {
 
   const loadInitialData = async () => {
     try {
-      const [txData, trData] = await Promise.all([
+      const [txData, trData, ppConfig] = await Promise.all([
         agentService.getTransactions(),
-        agentService.getTreasuryStats()
+        agentService.getTreasuryStats(),
+        paypalService.getCredentials().catch(() => null)
       ]);
       if (txData?.transactions) setTransactions(txData.transactions);
       if (trData) setTreasury(trData);
+      if (ppConfig) setPaypalConfig(ppConfig);
     } catch (err) {
       console.warn('Initial data load warning:', err.message);
     }
@@ -64,8 +69,7 @@ export default function App() {
       const data = await agentService.negotiate({ scenarioId: selectedScenario });
       setContract(data);
       setDeliverables(data.deliverables || []);
-      
-      // Auto-capture order for immediate smooth demonstration
+      // Auto-secure escrow after negotiation completes
       setIsOrderCaptured(true);
     } catch (err) {
       alert('Negotiation failed: ' + err.message);
@@ -89,7 +93,6 @@ export default function App() {
     if (!contract) return;
 
     if (simulateFailure) {
-      // Mark milestone as disputed
       const updated = [...deliverables];
       updated[index] = {
         ...updated[index],
@@ -102,7 +105,6 @@ export default function App() {
         reason: 'CRITICAL_SLA_BREACH: API Latency exceeded 35ms ceiling (184ms recorded)'
       });
 
-      // Scroll smoothly to Themis court section
       setTimeout(() => {
         document.getElementById('themis-section')?.scrollIntoView({ behavior: 'smooth' });
       }, 300);
@@ -159,14 +161,12 @@ export default function App() {
 
       setArbitrationRuling(ruling);
 
-      // Update deliverables status
       const updated = deliverables.map(d => ({
         ...d,
         status: d.status === 'VERIFIED_RELEASED' ? 'VERIFIED_RELEASED' : 'ARBITRATED_SETTLED'
       }));
       setDeliverables(updated);
 
-      // Refresh telemetry
       loadInitialData();
     } catch (err) {
       alert('Arbitration failed: ' + err.message);
@@ -190,7 +190,6 @@ export default function App() {
     const newState = !emergencyFreeze;
     setEmergencyFreeze(newState);
     if (newState) {
-      // Pause all active agents in grid
       setTransactions(prev => prev.map(t => ({
         ...t,
         agentStatus: 'FROZEN',
@@ -206,8 +205,9 @@ export default function App() {
     try {
       await paypalService.captureOrder(orderId);
       setIsOrderCaptured(true);
+      loadInitialData();
     } catch (err) {
-      console.warn('Capture warning:', err.message);
+      console.warn('Capture notice:', err.message);
       setIsOrderCaptured(true);
     }
   };
@@ -280,6 +280,7 @@ export default function App() {
         onClose={() => setIsPayPalModalOpen(false)}
         contract={contract}
         onApproveEscrow={handleApproveEscrow}
+        paypalClientId={paypalConfig?.clientId}
       />
 
       <SettingsDrawer

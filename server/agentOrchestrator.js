@@ -1,9 +1,7 @@
 import crypto from 'crypto';
 import { createOrder, captureOrder, sendMilestonePayout, refundCapture } from './paypalClient.js';
+import { saveDbContract, addDbTransaction, updateDbTransaction, getDbTransactions } from './db.js';
 
-/**
- * Pre-configured Scenarios for instant 1-tap live demonstrations
- */
 export const DEMO_SCENARIOS = {
   gpu_procurement: {
     id: 'SCN_GPU_01',
@@ -87,7 +85,7 @@ export const DEMO_SCENARIOS = {
         expectedProof: 'Signed mitigation proof with regression harness'
       }
     ],
-    outcomeType: 'DISPUTE_ARBITRATION' // Designed to trigger Themis AI Arbiter
+    outcomeType: 'DISPUTE_ARBITRATION'
   }
 };
 
@@ -121,7 +119,7 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
       sender: supplier.name,
       senderRole: 'SUPPLIER_AGENT',
       action: 'COUNTER_PROPOSAL',
-      message: `Aetheria node capacity confirmed for "${taskTitle}". Sunk compute allocation requires initial tranche funding. Counter-proposal: $${(targetBudget * 0.95).toFixed(2)} total, structured as 25% M1 (Architecture/Benchmark), 50% M2 (Distributed Execution), 25% M3 (Validation Signoff). SLA commitment: 99.85% guaranteed.`,
+      message: `Capacity verified for "${taskTitle}". Counter-proposal: $${(targetBudget * 0.95).toFixed(2)} total, structured as 25% M1 (Benchmark), 50% M2 (Distributed Execution), 25% M3 (Signoff). SLA commitment: 99.85% guaranteed.`,
       proposal: {
         budget: targetBudget * 0.95,
         milestones: 3,
@@ -135,7 +133,7 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
       sender: buyer.name,
       senderRole: 'BUYER_AGENT',
       action: 'POLICY_CONVERGENCE',
-      message: `Evaluating counter-proposal against NovaCorp Financial Covenant Mandate #892. Accepted on condition: Themis AI Arbiter clause included for automated penalty calculations if SLA drops below 99.5%. Final settlement figure: $${(targetBudget * 0.92).toFixed(2)}.`,
+      message: `Evaluating counter-proposal against NovaCorp Financial Covenant Mandate #892. Accepted with Themis AI Arbiter binding escrow clause. Final settlement figure: $${(targetBudget * 0.92).toFixed(2)}.`,
       proposal: {
         budget: targetBudget * 0.92,
         milestones: 3,
@@ -149,7 +147,7 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
       sender: supplier.name,
       senderRole: 'SUPPLIER_AGENT',
       action: 'ACCEPT_CONTRACT',
-      message: `Agreement reached. Cryptographic signature generated. Hermes Agent commits 100% capacity to Contract #NP-${Math.random().toString(36).substring(2, 7).toUpperCase()}. Initializing PayPal Escrow Order.`,
+      message: `Agreement reached. Hermes Agent commits 100% capacity to Contract #NP-${Math.random().toString(36).substring(2, 7).toUpperCase()}. Initializing PayPal Escrow Order.`,
       proposal: {
         budget: targetBudget * 0.92,
         status: 'SIGNED_BY_BOTH_PARTIES',
@@ -170,7 +168,7 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
     customId: `MANDATE_${buyer.id}_${supplier.id}`
   });
 
-  return {
+  const contractObj = {
     contractId,
     scenarioId,
     title: taskTitle,
@@ -184,12 +182,35 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
       ...d,
       milestoneIndex: index + 1,
       amount: Number((agreedAmount * d.share).toFixed(2)),
-      status: 'LOCKED', // LOCKED, IN_PROGRESS, VERIFIED_RELEASED, DISPUTED
+      status: 'LOCKED',
       payoutDetails: null,
       verificationProof: null
     })),
     createdAt: new Date().toISOString()
   };
+
+  // Persist contract to database
+  saveDbContract(contractObj);
+
+  // Add transaction row to AG Grid telemetry
+  addDbTransaction({
+    id: 'TXN-' + crypto.randomBytes(3).toString('hex').toUpperCase() + '-PP',
+    timestamp: new Date().toISOString(),
+    buyerAgent: buyer.name,
+    supplierAgent: supplier.name,
+    category: scenario.category,
+    amount: agreedAmount,
+    currency: 'USD',
+    milestoneStage: 'Escrow Locked',
+    milestoneProgress: 0,
+    riskScore: 10,
+    slaHealth: 99.8,
+    paypalReference: paypalOrder.id,
+    agentStatus: 'ACTIVE',
+    settlementRail: 'PayPal Orders v2'
+  });
+
+  return contractObj;
 }
 
 /**
@@ -206,13 +227,12 @@ export async function verifyAndReleaseMilestone({
   const timestamp = new Date().toISOString();
 
   if (simulateFailure) {
-    // Generate an SLA breach artifact
     return {
       success: false,
       status: 'VERIFICATION_FAILED',
       milestoneIndex,
       disputeTriggered: true,
-      error: 'CRITICAL_SLA_BREACH: Latency spike to 184ms exceeded 35ms ceiling (Contract clause 4.2). Checksum integrity error detected.',
+      error: 'CRITICAL_SLA_BREACH: Latency spike to 184ms exceeded 35ms ceiling (Contract clause 4.2).',
       failedProof: {
         metric: 'API_RESPONSE_LATENCY',
         threshold: '<35ms',
@@ -253,8 +273,6 @@ export async function verifyAndReleaseMilestone({
 
 /**
  * Themis: Autonomous AI Arbiter Protocol
- * Ingests original contract terms, cryptographic proofs, and SLA logs.
- * Produces reasoned ruling and triggers PayPal Dispute Refund / Release.
  */
 export async function runThemisArbitration({
   contractId,
@@ -266,7 +284,6 @@ export async function runThemisArbitration({
 }) {
   const timestamp = new Date().toISOString();
   
-  // Step-by-step AI Arbiter legal-financial reasoning
   const evidenceAnalysis = {
     contractTerms: {
       expectedSLA: '99.5% minimum uptime, <35ms latency guarantee',
@@ -276,19 +293,18 @@ export async function runThemisArbitration({
       metric: 'API_LATENCY_VIOLATION',
       observed: '184.2ms peak latency, 4 dropped batches during M2 stress-test',
       delta: '+426% latency anomaly above agreed ceiling',
-      supplierContention: 'Hermes claimed AWS us-east-1 fiber disruption beyond agent control',
-      buyerContention: 'Atlas mandated multi-region fallback redundancy in Contract Section 3.1'
+      supplierContention: 'Hermes claimed upstream routing disruption beyond agent control',
+      buyerContention: 'Atlas mandated multi-region fallback redundancy in Section 3.1'
     }
   };
 
-  // Calculate proportional resolution
-  const clawbackPercentage = 0.45; // 45% to Buyer
-  const supplierPercentage = 0.55; // 55% to Supplier (sunk compute compensation)
+  const clawbackPercentage = 0.45;
+  const supplierPercentage = 0.55;
   
   const refundAmount = Number((totalEscrowRemaining * clawbackPercentage).toFixed(2));
   const supplierReleaseAmount = Number((totalEscrowRemaining * supplierPercentage).toFixed(2));
 
-  // Trigger real or simulated PayPal Refund API for the clawback
+  // Trigger real or simulated PayPal Refund API
   const paypalRefund = await refundCapture({
     captureId,
     amount: refundAmount,

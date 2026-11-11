@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { X, Lock, ShieldCheck, CheckCircle2, ArrowRight, DollarSign } from 'lucide-react';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { X, Lock, ShieldCheck, CheckCircle2, ArrowRight, DollarSign, Zap, ExternalLink } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
+import { paypalService } from '../services/paypalService';
 
 export default function PayPalModal({
   isOpen,
   onClose,
   contract,
-  onApproveEscrow
+  onApproveEscrow,
+  paypalClientId
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [sdkError, setSdkError] = useState(null);
 
   if (!isOpen || !contract) return null;
 
   const orderAmount = contract.agreedAmount || 2150;
   const orderId = contract.paypalOrder?.id || 'ORD-8921A4B9';
+  const effectiveClientId = paypalClientId && paypalClientId.trim() !== '' ? paypalClientId.trim() : 'test';
 
   const handleInstantApprove = async () => {
     setIsProcessing(true);
@@ -26,8 +31,8 @@ export default function PayPalModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#0D1424] border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+      <div className="bg-[#0D1424] border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative max-h-[92vh] flex flex-col">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -42,7 +47,12 @@ export default function PayPalModal({
             Ψ
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">PayPal Smart Escrow Authorization</h3>
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              PayPal Smart Escrow Authorization
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-paypal-cyan/20 text-paypal-cyan border border-paypal-cyan/30">
+                Official SDK
+              </span>
+            </h3>
             <p className="text-xs text-slate-400">
               Contract Ref: <span className="font-mono text-paypal-cyan">{contract.contractId}</span>
             </p>
@@ -50,7 +60,7 @@ export default function PayPalModal({
         </div>
 
         {/* Amount & Mandate Breakdown */}
-        <div className="my-5 p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+        <div className="my-4 p-4 rounded-xl bg-slate-900/90 border border-slate-800 shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400">Total Escrow Commitment:</span>
             <span className="text-xl font-bold font-mono text-paypal-cyan">
@@ -71,30 +81,90 @@ export default function PayPalModal({
               <span className="text-slate-400">PayPal Order ID:</span>
               <span className="font-mono text-paypal-cyan">{orderId}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Disbursement Rail:</span>
-              <span className="font-mono text-emerald-400">3-Milestone Conditional Payouts</span>
-            </div>
           </div>
         </div>
 
-        {/* Payment Buttons Section */}
-        <div className="space-y-3">
-          {/* Instant 1-Click Sandbox Authorization Button */}
+        {/* Interactive Payment Section */}
+        <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+          {/* Real PayPal JS SDK Buttons */}
+          <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <div className="text-xs font-semibold uppercase text-slate-400 tracking-wider mb-3 flex items-center justify-between">
+              <span>Official PayPal Smart Buttons</span>
+              <span className="text-[10px] text-paypal-cyan font-mono">Live Sandbox Rail</span>
+            </div>
+
+            <PayPalScriptProvider options={{
+              clientId: effectiveClientId,
+              currency: 'USD',
+              intent: 'capture',
+              components: 'buttons'
+            }}>
+              <PayPalButtons
+                style={{
+                  layout: 'vertical',
+                  shape: 'rect',
+                  color: 'gold',
+                  height: 42,
+                  label: 'pay'
+                }}
+                createOrder={async () => {
+                  try {
+                    const res = await paypalService.createOrder({
+                      amount: orderAmount,
+                      currency: 'USD',
+                      description: `NexusPay Escrow [${contract.contractId}]`,
+                      customId: contract.contractId
+                    });
+                    return res.id;
+                  } catch (err) {
+                    console.error('Error creating order via PayPal SDK:', err);
+                    return orderId;
+                  }
+                }}
+                onApprove={async (data) => {
+                  setIsProcessing(true);
+                  try {
+                    await paypalService.captureOrder(data.orderID || orderId);
+                    await onApproveEscrow(data.orderID || orderId);
+                    onClose();
+                  } finally {
+                    setIsProcessing(false);
+                  }
+                }}
+                onError={(err) => {
+                  console.warn('PayPal Button SDK Info:', err);
+                  setSdkError(err.message);
+                }}
+              />
+            </PayPalScriptProvider>
+          </div>
+
+          {/* Quick Instant Sandbox Auto-Approve Option */}
+          <div className="relative flex py-1 items-center">
+            <div className="flex-grow border-t border-slate-800"></div>
+            <span className="flex-shrink mx-3 text-[10px] uppercase font-mono text-slate-500">
+              Or Autonomous Quick-Approval
+            </span>
+            <div className="flex-grow border-t border-slate-800"></div>
+          </div>
+
           <button
             onClick={handleInstantApprove}
             disabled={isProcessing}
-            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-paypal-gold via-yellow-400 to-amber-500 hover:brightness-105 active:scale-[0.99] text-slate-950 font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2"
+            className="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-slate-700"
           >
-            <Lock className="w-4 h-4" />
-            <span>{isProcessing ? 'Locking Funds in PayPal Vault...' : 'Authorize Escrow with PayPal'}</span>
+            <Zap className="w-3.5 h-3.5 text-paypal-gold" />
+            <span>{isProcessing ? 'Capturing Escrow...' : 'Instant 1-Click Sandbox Authorization'}</span>
           </button>
+        </div>
 
-          {/* Fallback info */}
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 text-center">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Cryptographically sealed under NovaCorp Mandate #892</span>
+        {/* Security badge footer */}
+        <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>256-Bit Encrypted Vault</span>
           </div>
+          <span className="font-mono text-slate-500">PayPal REST v2</span>
         </div>
       </div>
     </div>

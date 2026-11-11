@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Key, Radio, Check, Save, Shield, Terminal, RefreshCw, AlertCircle } from 'lucide-react';
+import { X, Key, Radio, Check, Save, Shield, Terminal, RefreshCw, AlertCircle, Activity, Wifi, ExternalLink } from 'lucide-react';
 import { paypalService } from '../services/paypalService';
 import { formatRelativeTime } from '../utils/formatters';
+import axios from 'axios';
 
 export default function SettingsDrawer({ isOpen, onClose }) {
   const [clientId, setClientId] = useState('');
@@ -10,6 +11,10 @@ export default function SettingsDrawer({ isOpen, onClose }) {
   const [webhooks, setWebhooks] = useState([]);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Connection testing state
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -41,6 +46,23 @@ export default function SettingsDrawer({ isOpen, onClose }) {
     }
   };
 
+  const handleTestConnection = async () => {
+    setTestingConnection(true);
+    setConnectionStatus(null);
+    try {
+      const res = await axios.get('/api/paypal/test-connection');
+      setConnectionStatus(res.data);
+    } catch (err) {
+      setConnectionStatus({
+        connected: false,
+        error: err.response?.data?.error || err.message,
+        message: 'Connection test failed.'
+      });
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -48,6 +70,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
       await paypalService.updateCredentials(clientId, clientSecret, simulationMode);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
+      handleTestConnection();
     } catch (err) {
       alert('Error saving credentials: ' + err.message);
     } finally {
@@ -81,10 +104,60 @@ export default function SettingsDrawer({ isOpen, onClose }) {
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Live Connection Diagnostics Card */}
+          <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-paypal-cyan" />
+                <span className="text-xs font-semibold uppercase text-slate-300">
+                  PayPal Sandbox Health
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleTestConnection}
+                disabled={testingConnection}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-colors flex items-center gap-1.5 border border-slate-700"
+              >
+                <Wifi className={`w-3 h-3 ${testingConnection ? 'animate-spin text-paypal-cyan' : ''}`} />
+                <span>{testingConnection ? 'Pinging...' : 'Test Ping'}</span>
+              </button>
+            </div>
+
+            {connectionStatus ? (
+              <div className={`p-3 rounded-lg text-xs font-mono ${
+                connectionStatus.connected
+                  ? 'bg-emerald-950/40 border border-emerald-800 text-emerald-300'
+                  : 'bg-amber-950/40 border border-amber-800 text-amber-300'
+              }`}>
+                <div className="flex items-center justify-between font-bold">
+                  <span>Status: {connectionStatus.connected ? 'ONLINE (Live Sandbox)' : 'SIMULATION MODE'}</span>
+                  <span>{connectionStatus.latencyMs}ms</span>
+                </div>
+                <div className="text-[11px] mt-1 font-sans opacity-90">{connectionStatus.message}</div>
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500 font-mono">
+                Click "Test Ping" to measure round-trip latency to https://api-m.sandbox.paypal.com.
+              </div>
+            )}
+          </div>
+
           {/* Credentials Form */}
           <form onSubmit={handleSave} className="space-y-4">
-            <div className="text-xs font-semibold uppercase text-slate-400 tracking-wider">
-              PayPal Developer Credentials (Sandbox):
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">
+                PayPal Developer Credentials (Sandbox):
+              </span>
+              <a
+                href="https://developer.paypal.com/dashboard/applications/sandbox"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] text-paypal-cyan hover:underline flex items-center gap-1"
+              >
+                <span>Get Keys</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
 
             <div>
@@ -95,7 +168,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
                 type="text"
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
-                placeholder="e.g. A21AAK... or test-client-id"
+                placeholder="Paste PayPal Sandbox Client ID..."
                 className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-paypal-cyan"
               />
             </div>
@@ -108,7 +181,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
                 type="password"
                 value={clientSecret}
                 onChange={(e) => setClientSecret(e.target.value)}
-                placeholder="••••••••••••••••••••"
+                placeholder="Paste PayPal Sandbox Client Secret..."
                 className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-paypal-cyan"
               />
             </div>
@@ -116,7 +189,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
             {/* Mode Selector */}
             <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
               <label className="flex items-center justify-between text-xs text-slate-300 cursor-pointer">
-                <span>Interactive Sandbox Simulation (Instant No-Login Demo)</span>
+                <span>Interactive Sandbox Simulation (Instant Demo)</span>
                 <input
                   type="checkbox"
                   checked={simulationMode}
@@ -125,7 +198,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
                 />
               </label>
               <p className="text-[11px] text-slate-500">
-                When enabled, returns realistic PayPal Orders v2 & Payouts schemas without requiring live sandbox test account credentials.
+                When enabled, returns realistic PayPal Orders v2 & Payouts schemas without requiring custom developer credentials.
               </p>
             </div>
 
@@ -157,10 +230,10 @@ export default function SettingsDrawer({ isOpen, onClose }) {
               </button>
             </div>
 
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
               {webhooks.length === 0 ? (
                 <div className="text-center py-6 text-xs text-slate-500">
-                  No webhooks recorded yet. Run a transaction to trigger webhooks.
+                  No webhooks recorded yet.
                 </div>
               ) : (
                 webhooks.map((wh, idx) => (
