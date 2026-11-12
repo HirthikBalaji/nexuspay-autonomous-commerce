@@ -39,6 +39,16 @@ app.get('/api/docs/openapi.json', (req, res) => {
   }
 });
 
+// Standalone White-Themed HTML Portal
+app.get('/portal', (req, res) => {
+  const portalPath = path.join(__dirname, '..', 'portal.html');
+  if (fs.existsSync(portalPath)) {
+    res.sendFile(portalPath);
+  } else {
+    res.status(404).send('Portal page not found');
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
