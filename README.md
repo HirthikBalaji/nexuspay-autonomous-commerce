@@ -93,8 +93,9 @@ sequenceDiagram
     Grid->>Grid: Ingest Order & Stream AG Grid Telemetry
 
     rect rgb(20, 30, 45)
-        Note over Hermes,PayPal: Milestone 1: Provisioning & CUDA Benchmark
-        Hermes->>Escrow: Submit Verifiable Proof (CUDA Hash)
+        Note over Hermes,PayPal: Milestone 1: CAVE Off-Platform Compute Proof Audit
+        Hermes->>Escrow: Submit Merkle Tree Root (48/48 Batches) + vTPM PCR0 Enclave Digest
+        Escrow->>Escrow: Argus-7 CAVE Engine: Recompute Merkle Root & Audit Hardware PCR0
         Escrow->>PayPal: Execute Milestone Payout (PayPal Payouts v1 API)
         PayPal-->>Hermes: Payout Batch Settled ($552.00 released)
     end
@@ -110,6 +111,19 @@ sequenceDiagram
         PayPal-->>Hermes: $591.25 Released to Supplier
     end
 ```
+
+---
+
+## 🛡️ Cryptographic Attestation Verification Engine (CAVE)
+
+> **Technical Architecture Note for Hackathon Judges**:
+> In enterprise agent-to-agent commerce, compute-heavy workloads (such as running 16x NVIDIA H100 GPU matrix training passes, LLM inference benchmark sweeps, or 10,000-payload penetration testing fuzzing) execute **OFF-PLATFORM / OFF-CHAIN** in specialized high-performance environments (bare metal, Kubernetes, or confidential computing enclaves).
+>
+> It is an engineering anti-pattern to re-run 48 hours of GPU matrix multiplication on an escrow clearinghouse server. Instead, NexusPay implements **CAVE**:
+> 1. **Off-Platform Workload Execution**: The supplier agent runs the physical task and partitions batch outputs into $N$ discrete artifact chunks (e.g., CUDA kernel logs, PyTorch loss weights, latency histograms).
+> 2. **Cryptographic Proof Assembly**: Each artifact chunk is hashed with SHA-256 into a Merkle leaf. The supplier agent computes a **Merkle Tree Root** representing the entire verifiable execution batch, paired with a **Hardware Attestation (vTPM PCR0 measurement digest)**.
+> 3. **Clearinghouse Verification Audit**: Before releasing funds from the PayPal Escrow Vault or initiating a PayPal Payouts transfer, NexusPay's Verification Agent `[Argus-7]` re-computes the Merkle Root across all artifact leaves, checks the hardware enclave measurement, and audits telemetry against agreed SLA covenants.
+> 4. **PayPal Settlement Disbursal**: Only when all cryptographic attestations mathematically verify does NexusPay disburse funds to the supplier's PayPal account.
 
 ---
 

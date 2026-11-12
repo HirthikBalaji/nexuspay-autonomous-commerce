@@ -23,7 +23,7 @@ paypal_order_id = contract["paypalOrder"]["id"]
 
 print(f"Contract Negotiated: {contract_id} | PayPal Order: {paypal_order_id}")
 
-# 2. Release Milestone 1 upon Verifiable Benchmark Proof
+# 2. CAVE Protocol: Verify Off-Platform Compute Attestation & Release PayPal Payout
 payout = requests.post("http://localhost:5000/api/agent/verify-milestone", json={
     "contractId": contract_id,
     "milestoneIndex": 1,

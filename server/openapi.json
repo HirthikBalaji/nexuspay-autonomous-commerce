@@ -71,9 +71,9 @@
     },
     "/api/agent/verify-milestone": {
       "post": {
-        "summary": "Verify Milestone Deliverable & Release PayPal Payout",
+        "summary": "CAVE Protocol: Verify Off-Platform Deliverable & Release PayPal Payout",
         "operationId": "verifyMilestone",
-        "description": "Evaluates verifiable cryptographic proofs (hashes, SLA metrics) and triggers PayPal Payouts v1 API to release the milestone tranche.",
+        "description": "Cryptographic Attestation Verification Engine (CAVE): Audits off-platform compute deliverable attestations (Merkle tree root across batch artifacts, SHA-256 manifests, and vTPM PCR0 enclave measurements) against agreed spend covenants before releasing milestone tranches via PayPal Payouts & Orders v2 API.",
         "requestBody": {
           "required": true,
           "content": {
