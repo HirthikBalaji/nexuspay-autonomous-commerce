@@ -8,6 +8,7 @@ import {
   listCustomerDisputes,
   getPayPalConfig 
 } from '../paypalClient.js';
+import { callOpenRouterChat, extractJsonFromLlm } from '../llmClient.js';
 
 const router = express.Router();
 
@@ -169,6 +170,93 @@ router.post('/execute', async (req, res) => {
   } catch (error) {
     console.error(`[PayPal MCP] Execution error for ${tool}:`, error);
     res.status(500).json({ error: error.message, tool });
+  }
+});
+
+// POST /api/paypal/agent-tools/chat (Natural Language -> MCP Tool Selection -> Live PayPal Execution)
+router.post('/chat', async (req, res) => {
+  const { message } = req.body;
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({ error: 'Valid instruction message required' });
+  }
+
+  const prompt = `You are an Autonomous Treasury Agent equipped with the PayPal Model Context Protocol (MCP).
+User instruction: "${message}"
+
+Available MCP Tools:
+- paypal_send_payout: { receiverEmail: string, amount: number, currency: string, note: string }
+- paypal_create_order: { amount: number, currency: string, description: string }
+- paypal_refund_capture: { captureId: string, amount: number, reason: string }
+
+Select the appropriate tool and respond with raw valid JSON only matching:
+{
+  "tool": "paypal_send_payout",
+  "arguments": {
+    "receiverEmail": "sb-47udt4751600779@business.example.com",
+    "amount": 250.00,
+    "currency": "USD",
+    "note": "..."
+  },
+  "agentThought": "1 sentence explaining why this tool was chosen"
+}`;
+
+  try {
+    const startTime = Date.now();
+    const llmRes = await callOpenRouterChat({
+      messages: [
+        { role: 'system', content: 'You are an autonomous PayPal MCP Agent. Always respond with raw JSON tool invocations.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.1,
+      maxTokens: 600
+    });
+
+    const parsed = extractJsonFromLlm(llmRes.content);
+    if (!parsed || !parsed.tool) {
+      return res.status(422).json({
+        error: 'LLM failed to output valid MCP tool invocation',
+        rawContent: llmRes.content
+      });
+    }
+
+    let executionResult = null;
+    if (parsed.tool === 'paypal_send_payout') {
+      executionResult = await sendMilestonePayout({
+        senderBatchId: 'MCP_CHAT_' + Date.now(),
+        receiverEmail: parsed.arguments.receiverEmail || 'sb-47udt4751600779@business.example.com',
+        amount: parsed.arguments.amount || 100,
+        currency: parsed.arguments.currency || 'USD',
+        note: parsed.arguments.note || 'Autonomous MCP Milestone Payout'
+      });
+    } else if (parsed.tool === 'paypal_create_order') {
+      executionResult = await createOrder({
+        amount: parsed.arguments.amount || 500,
+        currency: parsed.arguments.currency || 'USD',
+        description: parsed.arguments.description || 'Autonomous Agent Escrow Order'
+      });
+    } else if (parsed.tool === 'paypal_refund_capture') {
+      executionResult = await refundCapture({
+        captureId: parsed.arguments.captureId || 'CAP-AUTO-' + Date.now(),
+        amount: parsed.arguments.amount || 150,
+        currency: parsed.arguments.currency || 'USD',
+        reason: parsed.arguments.reason || 'Autonomous Dispute Clawback'
+      });
+    } else {
+      return res.status(400).json({ error: `Unsupported tool: ${parsed.tool}` });
+    }
+
+    return res.json({
+      success: true,
+      llmTelemetry: {
+        model: llmRes.model,
+        latencyMs: Date.now() - startTime,
+        tokens: llmRes.tokens
+      },
+      mcpToolCall: parsed,
+      executionResult
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

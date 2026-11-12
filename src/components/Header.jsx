@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, RefreshCw, Cpu, ShieldAlert, Trophy, Radio, Sparkles } from 'lucide-react';
+import { Play, RefreshCw, Cpu, ShieldAlert, Trophy, Radio, Sparkles, Bot } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function Header({
@@ -11,6 +11,7 @@ export default function Header({
   onRefresh,
   treasury,
   onOpenTour,
+  onOpenMcpChat,
   paypalConfig,
   currency = 'USD',
   onToggleCurrency
@@ -110,6 +111,16 @@ export default function Header({
 
       {/* Right Controls & Quick Actions */}
       <div className="flex items-center gap-2.5">
+        {/* Agent MCP Chat Terminal Button */}
+        <button
+          onClick={onOpenMcpChat}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 via-cyan-500/30 to-blue-500/20 text-cyan-300 border border-cyan-500/40 hover:brightness-125 text-xs font-bold tracking-wide transition-all shadow-md shadow-cyan-500/10 hover:scale-[1.02]"
+          title="Autonomous Agent MCP Chat Console (Model Context Protocol)"
+        >
+          <Bot className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="hidden sm:inline">MCP Terminal</span>
+        </button>
+
         {/* Judge Tour Button (Highlight for Hackathon Judges) */}
         <button
           onClick={onOpenTour}

@@ -15,6 +15,7 @@ import PayPalModal from './components/PayPalModal';
 import SettingsDrawer from './components/SettingsDrawer';
 import ApiDocsModal from './components/ApiDocsModal';
 import JudgeTourModal from './components/JudgeTourModal';
+import AgentMcpModal from './components/AgentMcpModal';
 import confetti from 'canvas-confetti';
 
 import { agentService } from './services/agentService';
@@ -48,6 +49,7 @@ export default function App() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [isPayPalModalOpen, setIsPayPalModalOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [isMcpModalOpen, setIsMcpModalOpen] = useState(false);
 
   useEffect(() => {
     loadInitialData();
@@ -315,6 +317,7 @@ export default function App() {
           onRefresh={loadInitialData}
           treasury={treasury}
           onOpenTour={() => setIsTourOpen(true)}
+          onOpenMcpChat={() => setIsMcpModalOpen(true)}
           paypalConfig={paypalConfig}
           currency={currency}
           onToggleCurrency={(newCur) => {
@@ -482,6 +485,11 @@ export default function App() {
       <ApiDocsModal
         isOpen={isDocsOpen}
         onClose={() => setIsDocsOpen(false)}
+      />
+
+      <AgentMcpModal
+        isOpen={isMcpModalOpen}
+        onClose={() => setIsMcpModalOpen(false)}
       />
     </div>
   );
