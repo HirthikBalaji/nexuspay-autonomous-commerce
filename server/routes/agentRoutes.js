@@ -6,11 +6,22 @@ import {
   runThemisArbitration 
 } from '../agentOrchestrator.js';
 import { getDb, getDbContract } from '../db.js';
+import { checkLlmHealth } from '../llmClient.js';
 
 const getDbContracts = () => getDb().contracts || [];
 const getDbContractById = (id) => getDbContract(id);
 
 const router = express.Router();
+
+// GET /api/agent/llm-status
+router.get('/llm-status', async (req, res) => {
+  try {
+    const health = await checkLlmHealth();
+    res.json(health);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // GET /api/agent/scenarios
 router.get('/scenarios', (req, res) => {

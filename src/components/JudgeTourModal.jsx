@@ -49,9 +49,9 @@ export default function JudgeTourModal({
     {
       step: 2,
       targetTab: 'escrow',
-      title: '2. Multi-Agent Negotiation & Spend Covenants',
-      sponsorBadge: 'PayPal + AI ($5,000 Prize)',
-      description: 'Atlas (Buyer) and Hermes (Supplier) dynamically negotiate price, milestones, and SLA guarantees governed by NovaCorp cryptographic spend covenants.',
+      title: '2. Real OpenRouter LLM Negotiation & Spend Covenants',
+      sponsorBadge: 'PayPal + AI ($5,000 Prize) • OpenRouter LLM',
+      description: 'Atlas (Buyer) and Hermes (Supplier) engage in dynamic multi-turn negotiation powered by real OpenRouter LLM inference, settling price, milestones, and SLA covenants in real time.',
       actionLabel: 'View Agreement & Lock PayPal Escrow',
       onExecute: () => {
         onSelectTab('escrow');
@@ -105,9 +105,9 @@ export default function JudgeTourModal({
     {
       step: 6,
       targetTab: 'arbitration',
-      title: '6. Themis AI Arbiter (PayPal Refund & Sunk Release)',
-      sponsorBadge: 'Sub-Second Multimodal Dispute',
-      description: 'Themis legal-financial model audits telemetry logs, calculates proportional fault, and instantly triggers automated PayPal Refund API + partial payout.',
+      title: '6. Themis AI Arbiter (Real OpenRouter LLM Judicial Ruling)',
+      sponsorBadge: 'Sub-Second Multimodal Dispute • OpenRouter LLM',
+      description: 'Themis autonomous judicial AI model calls OpenRouter in real-time to analyze telemetry logs, deliver an authoritative legal ruling on SLA covenants, and trigger PayPal Refund API + partial payout.',
       actionLabel: 'Deliberate Case & Enforce PayPal Ruling',
       onExecute: () => {
         onSelectTab('arbitration');

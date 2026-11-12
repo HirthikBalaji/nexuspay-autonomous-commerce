@@ -18,6 +18,195 @@
   },
   "contracts": [
     {
+      "contractId": "NP-CTR-7F31FA5E",
+      "scenarioId": "gpu_procurement",
+      "title": "16x NVIDIA H100 Distributed Cluster",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas internal reasoning assessing spend limits and milestone escrow requirements",
+          "message": "Atlas RFQ message proposing initial tranche offer around $2040",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.9% uptime, <15ms latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T09:36:53.106Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes margin calculation and capacity commitment for 16x cluster",
+          "message": "Hermes counter proposal around $2304 with SLA commitment",
+          "proposal": {
+            "budget": 2304,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T09:36:54.106Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas convergence rationale invoking Themis AI Arbiter dispute covenants",
+          "message": "Atlas final agreement at $2208 with binding PayPal escrow terms",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T09:36:55.106Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographic acceptance and PayPal Orders v2 creation trigger",
+          "message": "Hermes signing confirmation committing capacity",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T09:36:56.106Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "8CH63563FD053753X",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794476219345",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-ub3bd53174356@business.example.com",
+              "merchant_id": "5BSJMGX85KRBE",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: 16x NVIDIA H100 Distributed Cluster [NP-CTR-7F31FA5E]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: 16x NVIDIA H100 Distributed Cluster [NP-CTR-7F31FA5E]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T09:37:01Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8CH63563FD053753X",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=8CH63563FD053753X",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8CH63563FD053753X",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8CH63563FD053753X/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 2830,
+        "tokens": 1120
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Phase 1: 16x NVIDIA H100 Distributed Cluster - Environment Setup & Verification",
+          "share": 0.25,
+          "proofType": "ENVIRONMENT_BENCHMARK_HASH",
+          "expectedProof": "Environment verified: 16x NVIDIA H100 Distributed Cluster initialized with cryptographic handshake.",
+          "amount": 552,
+          "milestoneIndex": 1,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Phase 2: 16x NVIDIA H100 Distributed Cluster - Core Execution & Performance SLA",
+          "share": 0.5,
+          "proofType": "EXECUTION_TELEMETRY_LOG",
+          "expectedProof": "Execution log validated: Core deliverables generated and benchmarked against SLA thresholds.",
+          "amount": 1104,
+          "milestoneIndex": 2,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Phase 3: 16x NVIDIA H100 Distributed Cluster - Final Validation & Delivery Signoff",
+          "share": 0.25,
+          "proofType": "MERKLE_ROOT_SIGNOFF",
+          "expectedProof": "Final cryptographic signoff verified by NovaCorp Verifier Agent.",
+          "amount": 552,
+          "milestoneIndex": 3,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T09:37:02.873Z"
+    },
+    {
       "contractId": "NP-CTR-D969C2B1",
       "scenarioId": "gpu_procurement",
       "title": "32x H200 Cluster",
@@ -476,6 +665,23 @@
     }
   ],
   "transactions": [
+    {
+      "id": "TXN-CE01C5-PP",
+      "timestamp": "2026-11-12T09:37:02.878Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "Custom Autonomous RFP",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "8CH63563FD053753X",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
     {
       "id": "TXN-568ED4-PP",
       "timestamp": "2026-11-11T21:17:23.105Z",

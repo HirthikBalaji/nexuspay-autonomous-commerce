@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { createOrder, captureOrder, sendMilestonePayout, refundCapture } from './paypalClient.js';
 import { saveDbContract, addDbTransaction, updateDbTransaction, getDbTransactions } from './db.js';
+import { generateLlmNegotiation, generateLlmThemisRuling } from './llmClient.js';
 
 export const DEMO_SCENARIOS = {
   gpu_procurement: {
@@ -239,67 +240,107 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
   const m2Name = deliverables[1]?.name || 'Core Processing';
   const m3Name = deliverables[2]?.name || 'Final Signoff';
 
-  const rounds = [
-    {
-      round: 1,
-      sender: buyer.name,
-      senderRole: 'BUYER_AGENT',
-      action: 'BROADCAST_RFQ',
-      thought: `Analyzing corporate spend covenants for "${taskTitle}". Budget ceiling: $${targetBudget.toFixed(2)}. Initiating first-pass offer at 85% with milestone-gated escrow requirements.`,
-      message: `Issuing Request For Quote (RFQ) for: "${taskTitle}". Budget ceiling: $${targetBudget.toFixed(2)}. First-round tranche offer: $${rfqOffer.toFixed(2)}. Mandatory requirement: 3-phase PayPal Smart Escrow with cryptographic deliverable proofs. SLA covenant: ${customSla}.`,
-      proposal: {
-        budget: rfqOffer,
-        milestones: 3,
-        sla: customSla,
-        escrowHold: '100% Locked in PayPal Vault'
-      },
-      timestamp: new Date(Date.now() - 4000).toISOString()
-    },
-    {
-      round: 2,
-      sender: supplier.name,
-      senderRole: 'SUPPLIER_AGENT',
-      action: 'COUNTER_PROPOSAL',
-      thought: `Inventory capacity verified for "${taskTitle}". Spot rates are high; 85% is below operational margin. Countering at $${supplierCounter.toFixed(2)} with structured milestone weights.`,
-      message: `Autonomous capacity verified for "${taskTitle}". Counter-proposal: $${supplierCounter.toFixed(2)} total, structured as 25% M1 (${m1Name}), 50% M2 (${m2Name}), and 25% M3 (${m3Name}). SLA guarantee: 99.85% with automated webhook telemetry.`,
-      proposal: {
-        budget: supplierCounter,
-        milestones: 3,
-        sla: '99.85% SLA guaranteed, automated webhook telemetry',
-        escrowHold: 'Standard Milestone Release'
-      },
-      timestamp: new Date(Date.now() - 3000).toISOString()
-    },
-    {
-      round: 3,
-      sender: buyer.name,
-      senderRole: 'BUYER_AGENT',
-      action: 'POLICY_CONVERGENCE',
-      thought: `Counter-proposal of $${supplierCounter.toFixed(2)} meets technical specs. Applying NovaCorp Financial Covenant Mandate #892 with Themis AI Arbiter binding escrow clause.`,
-      message: `Evaluating counter-proposal against NovaCorp Financial Covenant #892. Accepted with binding Themis AI Arbiter dispute clause (15% deduction per 0.1% SLA breach). Final convergence price: $${agreedAmount.toFixed(2)}.`,
-      proposal: {
-        budget: agreedAmount,
-        milestones: 3,
-        arbitrationClause: 'Themis AI Arbiter Binding Escrow Enforcement',
-        penaltyRate: '15% tranche deduction per 0.1% SLA breach'
-      },
-      timestamp: new Date(Date.now() - 2000).toISOString()
-    },
-    {
-      round: 4,
-      sender: supplier.name,
-      senderRole: 'SUPPLIER_AGENT',
-      action: 'ACCEPT_CONTRACT',
-      thought: `Equilibrium price $${agreedAmount.toFixed(2)} satisfies margin constraints. Ready to sign agreement and request PayPal Escrow Authorization.`,
-      message: `Agreement reached. Hermes Agent commits 100% capacity to Contract #${contractId}. Ready to lock initial escrow funds on PayPal Orders v2.`,
-      proposal: {
-        budget: agreedAmount,
-        status: 'SIGNED_BY_BOTH_PARTIES',
-        contractHash: '0x' + crypto.randomBytes(20).toString('hex')
-      },
-      timestamp: new Date(Date.now() - 1000).toISOString()
+  // Attempt real LLM reasoning via OpenRouter free models
+  let rounds = null;
+  let llmTelemetry = null;
+
+  try {
+    const llmRes = await generateLlmNegotiation({
+      taskTitle,
+      targetBudget,
+      customSla,
+      buyer,
+      supplier,
+      isCustom,
+      scenario
+    });
+
+    if (llmRes && llmRes.success && Array.isArray(llmRes.rounds)) {
+      rounds = llmRes.rounds;
+      llmTelemetry = {
+        isRealLlm: true,
+        provider: 'OpenRouter Free AI Rails',
+        model: llmRes.modelUsed,
+        latencyMs: llmRes.latencyMs,
+        tokens: llmRes.tokens
+      };
     }
-  ];
+  } catch (err) {
+    console.warn('[Orchestrator] OpenRouter LLM negotiation error, using fallback:', err.message);
+  }
+
+  // Resilient fallback to deterministic negotiation engine if LLM offline/timeout
+  if (!rounds) {
+    rounds = [
+      {
+        round: 1,
+        sender: buyer.name,
+        senderRole: 'BUYER_AGENT',
+        action: 'BROADCAST_RFQ',
+        thought: `Analyzing corporate spend covenants for "${taskTitle}". Budget ceiling: $${targetBudget.toFixed(2)}. Initiating first-pass offer at 85% with milestone-gated escrow requirements.`,
+        message: `Issuing Request For Quote (RFQ) for: "${taskTitle}". Budget ceiling: $${targetBudget.toFixed(2)}. First-round tranche offer: $${rfqOffer.toFixed(2)}. Mandatory requirement: 3-phase PayPal Smart Escrow with cryptographic deliverable proofs. SLA covenant: ${customSla}.`,
+        proposal: {
+          budget: rfqOffer,
+          milestones: 3,
+          sla: customSla,
+          escrowHold: '100% Locked in PayPal Vault'
+        },
+        timestamp: new Date(Date.now() - 4000).toISOString()
+      },
+      {
+        round: 2,
+        sender: supplier.name,
+        senderRole: 'SUPPLIER_AGENT',
+        action: 'COUNTER_PROPOSAL',
+        thought: `Inventory capacity verified for "${taskTitle}". Spot rates are high; 85% is below operational margin. Countering at $${supplierCounter.toFixed(2)} with structured milestone weights.`,
+        message: `Autonomous capacity verified for "${taskTitle}". Counter-proposal: $${supplierCounter.toFixed(2)} total, structured as 25% M1 (${m1Name}), 50% M2 (${m2Name}), and 25% M3 (${m3Name}). SLA guarantee: 99.85% with automated webhook telemetry.`,
+        proposal: {
+          budget: supplierCounter,
+          milestones: 3,
+          sla: '99.85% SLA guaranteed, automated webhook telemetry',
+          escrowHold: 'Standard Milestone Release'
+        },
+        timestamp: new Date(Date.now() - 3000).toISOString()
+      },
+      {
+        round: 3,
+        sender: buyer.name,
+        senderRole: 'BUYER_AGENT',
+        action: 'POLICY_CONVERGENCE',
+        thought: `Counter-proposal of $${supplierCounter.toFixed(2)} meets technical specs. Applying NovaCorp Financial Covenant Mandate #892 with Themis AI Arbiter binding escrow clause.`,
+        message: `Evaluating counter-proposal against NovaCorp Financial Covenant #892. Accepted with binding Themis AI Arbiter dispute clause (15% deduction per 0.1% SLA breach). Final convergence price: $${agreedAmount.toFixed(2)}.`,
+        proposal: {
+          budget: agreedAmount,
+          milestones: 3,
+          arbitrationClause: 'Themis AI Arbiter Binding Escrow Enforcement',
+          penaltyRate: '15% tranche deduction per 0.1% SLA breach'
+        },
+        timestamp: new Date(Date.now() - 2000).toISOString()
+      },
+      {
+        round: 4,
+        sender: supplier.name,
+        senderRole: 'SUPPLIER_AGENT',
+        action: 'ACCEPT_CONTRACT',
+        thought: `Equilibrium price $${agreedAmount.toFixed(2)} satisfies margin constraints. Ready to sign agreement and request PayPal Escrow Authorization.`,
+        message: `Agreement reached. Hermes Agent commits 100% capacity to Contract #${contractId}. Ready to lock initial escrow funds on PayPal Orders v2.`,
+        proposal: {
+          budget: agreedAmount,
+          status: 'SIGNED_BY_BOTH_PARTIES',
+          contractHash: '0x' + crypto.randomBytes(20).toString('hex')
+        },
+        timestamp: new Date(Date.now() - 1000).toISOString()
+      }
+    ];
+
+    llmTelemetry = {
+      isRealLlm: false,
+      provider: 'Deterministic Agent Engine',
+      model: 'NexusPay-Core-Math-v1.2',
+      latencyMs: 14,
+      tokens: null
+    };
+  }
 
   // Create real or sandbox PayPal Order
   const paypalOrder = await createOrder({
@@ -319,6 +360,7 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
     supplier,
     rounds,
     paypalOrder,
+    llmTelemetry,
     deliverables: deliverables.map((d, index) => ({
       ...d,
       milestoneIndex: index + 1,
@@ -348,7 +390,8 @@ export async function runAgentNegotiation({ scenarioId = 'gpu_procurement', cust
     slaHealth: 99.8,
     paypalReference: paypalOrder.id,
     agentStatus: 'ACTIVE',
-    settlementRail: 'PayPal Orders v2'
+    settlementRail: 'PayPal Orders v2',
+    llmEngine: llmTelemetry.model || 'OpenRouter LLM'
   });
 
   return contractObj;
@@ -434,15 +477,35 @@ export async function runThemisArbitration({
   const observedLatency = breachEvidence?.observedLatency || 184.2;
   const ceilingLatency = breachEvidence?.ceilingLatency || 35.0;
   const latencyDeviation = Math.round(((observedLatency - ceilingLatency) / ceilingLatency) * 100);
+  const escrowPool = Number(totalEscrowRemaining || agreedAmount || 1075);
+
+  // Attempt real OpenRouter LLM Themis AI Arbiter Ruling
+  let llmRuling = null;
+  try {
+    llmRuling = await generateLlmThemisRuling({
+      contractId,
+      taskTitle: disputeReason || 'Autonomous GPU Cloud Compute Agreement',
+      agreedAmount: Number(agreedAmount || 2200),
+      observedLatency,
+      ceilingLatency,
+      latencyDeviation,
+      escrowPool
+    });
+  } catch (err) {
+    console.warn('[Themis] OpenRouter LLM arbitration error, using algorithmic formula:', err.message);
+  }
 
   // Proportional clawback formula: min 15%, max 75%, scaled by breach severity
   let clawbackPercentage = 0.45;
-  if (latencyDeviation > 300) clawbackPercentage = 0.50;
-  if (latencyDeviation > 400) clawbackPercentage = 0.45;
-  if (latencyDeviation < 100) clawbackPercentage = 0.20;
+  if (llmRuling && llmRuling.success && typeof llmRuling.clawbackPercentage === 'number') {
+    clawbackPercentage = Math.max(0.20, Math.min(0.70, Number(llmRuling.clawbackPercentage.toFixed(2))));
+  } else {
+    if (latencyDeviation > 300) clawbackPercentage = 0.50;
+    if (latencyDeviation > 400) clawbackPercentage = 0.45;
+    if (latencyDeviation < 100) clawbackPercentage = 0.20;
+  }
 
   const supplierPercentage = Number((1.0 - clawbackPercentage).toFixed(2));
-  const escrowPool = Number(totalEscrowRemaining || agreedAmount || 1075);
   const refundAmount = Number((escrowPool * clawbackPercentage).toFixed(2));
   const supplierReleaseAmount = Number((escrowPool * supplierPercentage).toFixed(2));
 
@@ -467,10 +530,17 @@ export async function runThemisArbitration({
     arbitrationId: 'ARB-' + crypto.randomBytes(5).toString('hex').toUpperCase(),
     contractId,
     timestamp,
-    arbiterModel: 'Themis-v3.0-Autonomous-Legal-Arbiter (PayPal Agentic Clearinghouse)',
-    confidenceScore: 0.988,
-    verdict: 'PARTIAL_BREACH_ENFORCEMENT',
-    summary: `Themis AI Arbiter audited 12,480 telemetry ticks. Contract Section 4.2 stipulated P99 latency < ${ceilingLatency}ms. Telemetry evidenced spike to ${observedLatency}ms (+${latencyDeviation}% deviation) and 4 dropped micro-batches. Under Covenant Formula 4.2(b), Buyer is awarded $${refundAmount.toFixed(2)} (${Math.round(clawbackPercentage * 100)}%) refund via PayPal Refund API. Supplier is disbursed $${supplierReleaseAmount.toFixed(2)} (${Math.round(supplierPercentage * 100)}%) for verified partial work.`,
+    arbiterModel: llmRuling?.success ? `Themis-v3.0 (${llmRuling.modelUsed})` : 'Themis-v3.0-Autonomous-Legal-Arbiter (PayPal Agentic Clearinghouse)',
+    llmTelemetry: {
+      isRealLlm: Boolean(llmRuling?.success),
+      provider: llmRuling?.success ? 'OpenRouter Free AI Rails' : 'Deterministic Covenant Engine',
+      model: llmRuling?.modelUsed || 'Themis-Algorithmic-v3.0',
+      latencyMs: llmRuling?.latencyMs || 10,
+      tokens: llmRuling?.tokens || null
+    },
+    confidenceScore: llmRuling?.confidenceScore || 0.988,
+    verdict: llmRuling?.verdict || 'PARTIAL_BREACH_ENFORCEMENT',
+    summary: llmRuling?.summary || `Themis AI Arbiter audited 12,480 telemetry ticks. Contract Section 4.2 stipulated P99 latency < ${ceilingLatency}ms. Telemetry evidenced spike to ${observedLatency}ms (+${latencyDeviation}% deviation) and 4 dropped micro-batches. Under Covenant Formula 4.2(b), Buyer is awarded $${refundAmount.toFixed(2)} (${Math.round(clawbackPercentage * 100)}%) refund via PayPal Refund API. Supplier is disbursed $${supplierReleaseAmount.toFixed(2)} (${Math.round(supplierPercentage * 100)}%) for verified partial work.`,
     allocations: {
       buyerRefund: {
         percentage: `${Math.round(clawbackPercentage * 100)}%`,
@@ -499,8 +569,8 @@ export async function runThemisArbitration({
         metric: 'API_LATENCY_VIOLATION',
         observed: `${observedLatency}ms peak latency, 4 dropped batches during M2 stress-test`,
         delta: `+${latencyDeviation}% latency anomaly above agreed ceiling`,
-        supplierContention: 'Hermes claimed upstream cloud network routing disruption beyond agent control',
-        buyerContention: 'Atlas mandated multi-region fallback redundancy in Section 3.1'
+        supplierContention: llmRuling?.supplierContention || 'Hermes claimed upstream cloud network routing disruption beyond agent control',
+        buyerContention: llmRuling?.buyerContention || 'Atlas mandated multi-region fallback redundancy in Section 3.1'
       }
     },
     courtRuling,

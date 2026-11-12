@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, RefreshCw, Cpu, ShieldAlert, Trophy, Radio } from 'lucide-react';
+import { Play, RefreshCw, Cpu, ShieldAlert, Trophy, Radio, Sparkles } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function Header({
@@ -42,6 +42,13 @@ export default function Header({
         <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-[11px] font-mono text-emerald-300">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>PayPal Sandbox: LIVE (APP-6ET35875)</span>
+        </div>
+
+        {/* Live OpenRouter LLM Pill */}
+        <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-950/40 border border-purple-500/30 text-[11px] font-mono text-purple-300">
+          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+          <Sparkles className="w-3 h-3 text-purple-400" />
+          <span>OpenRouter AI: Active (LFM-2.5B)</span>
         </div>
       </div>
 

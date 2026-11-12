@@ -53,12 +53,25 @@ export default function NegotiationArena({
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-white/[0.06] gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
             <h3 className="text-base font-bold text-white">Autonomous Multi-Agent Negotiation Arena</h3>
             {contract?.contractId && (
               <span className="font-mono text-xs text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md">
                 {contract.contractId}
+              </span>
+            )}
+            {contract?.llmTelemetry && (
+              <span className={`font-mono text-[11px] px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 font-medium ${
+                contract.llmTelemetry.isRealLlm
+                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                  : 'bg-slate-800 text-slate-300 border-white/10'
+              }`}>
+                <Sparkles className="w-3 h-3 text-emerald-400" />
+                <span>{contract.llmTelemetry.isRealLlm ? `OpenRouter LLM: ${contract.llmTelemetry.model}` : contract.llmTelemetry.model}</span>
+                {contract.llmTelemetry.latencyMs && (
+                  <span className="opacity-75 text-[10px]">({contract.llmTelemetry.latencyMs}ms)</span>
+                )}
               </span>
             )}
           </div>

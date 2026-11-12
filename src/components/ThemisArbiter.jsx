@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, ShieldAlert, CheckCircle, FileText, ArrowRight, DollarSign } from 'lucide-react';
+import { Scale, ShieldAlert, CheckCircle, FileText, ArrowRight, DollarSign, Sparkles } from 'lucide-react';
 import { formatCurrency, truncateHash } from '../utils/formatters';
 
 export default function ThemisArbiter({
@@ -89,14 +89,37 @@ export default function ThemisArbiter({
                   Themis AI Binding Ruling: Partial Breach Enforcement
                 </h4>
               </div>
-              <div className="text-[11px] font-mono text-sky-400">
-                Confidence: {(arbitrationRuling.courtRuling?.confidenceScore * 100).toFixed(1)}% • Model: Themis-v2.4
+              <div className="flex items-center gap-2 text-[11px] font-mono text-sky-400">
+                {arbitrationRuling.courtRuling?.llmTelemetry?.isRealLlm && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-emerald-400" />
+                    <span>OpenRouter LLM: {arbitrationRuling.courtRuling.llmTelemetry.model}</span>
+                    {arbitrationRuling.courtRuling.llmTelemetry.latencyMs && (
+                      <span className="text-emerald-400/80 font-normal">({arbitrationRuling.courtRuling.llmTelemetry.latencyMs}ms)</span>
+                    )}
+                  </span>
+                )}
+                <span>Confidence: {((arbitrationRuling.courtRuling?.confidenceScore || 0.988) * 100).toFixed(1)}%</span>
               </div>
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed font-sans mb-4">
               {arbitrationRuling.courtRuling?.summary}
             </p>
+
+            {/* Buyer & Supplier Contention Analysis from LLM */}
+            {(arbitrationRuling.evidenceAnalysis?.discoveredBreach?.buyerContention || arbitrationRuling.evidenceAnalysis?.discoveredBreach?.supplierContention) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4 p-3 rounded-xl bg-slate-900/60 border border-white/[0.04] text-[11px] font-mono">
+                <div>
+                  <span className="text-sky-400 font-semibold block mb-0.5">Buyer Agent Contention:</span>
+                  <span className="text-slate-300">{arbitrationRuling.evidenceAnalysis.discoveredBreach.buyerContention}</span>
+                </div>
+                <div>
+                  <span className="text-indigo-400 font-semibold block mb-0.5">Supplier Agent Defense:</span>
+                  <span className="text-slate-300">{arbitrationRuling.evidenceAnalysis.discoveredBreach.supplierContention}</span>
+                </div>
+              </div>
+            )}
 
             {/* Financial Settlement Breakdown */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
