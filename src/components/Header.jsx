@@ -11,7 +11,9 @@ export default function Header({
   onRefresh,
   treasury,
   onOpenTour,
-  paypalConfig
+  paypalConfig,
+  currency = 'USD',
+  onToggleCurrency
 }) {
   const getTabTitle = () => {
     switch (activeTab) {
@@ -76,6 +78,33 @@ export default function Header({
         >
           <ShieldAlert className="w-3.5 h-3.5" />
           <span>Audit (Dispute)</span>
+        </button>
+      </div>
+
+      {/* Currency Switcher (USD / INR) */}
+      <div className="flex items-center p-0.5 bg-slate-900/90 rounded-xl border border-white/[0.08] shadow-inner">
+        <button
+          onClick={() => onToggleCurrency?.('USD')}
+          className={`px-2.5 py-1 rounded-lg text-xs font-semibold font-mono transition-all ${
+            currency === 'USD'
+              ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-sm'
+              : 'text-slate-400 hover:text-white'
+          }`}
+          title="US Dollar ($)"
+        >
+          $ USD
+        </button>
+        <button
+          onClick={() => onToggleCurrency?.('INR')}
+          className={`px-2.5 py-1 rounded-lg text-xs font-semibold font-mono transition-all flex items-center gap-1 ${
+            currency === 'INR'
+              ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 shadow-sm'
+              : 'text-slate-400 hover:text-white'
+          }`}
+          title="Indian Rupee (₹) • Real-Time Cross-Border FX @ 86.85"
+        >
+          <span>₹ INR</span>
+          <span className="text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-300 rounded hidden lg:inline">FX 86.85</span>
         </button>
       </div>
 

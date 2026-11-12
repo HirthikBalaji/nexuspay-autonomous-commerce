@@ -19,10 +19,12 @@ import confetti from 'canvas-confetti';
 
 import { agentService } from './services/agentService';
 import { paypalService } from './services/paypalService';
+import { getActiveCurrency, setActiveCurrency } from './utils/formatters';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('escrow');
   const [selectedScenario, setSelectedScenario] = useState('gpu_procurement');
+  const [currency, setCurrency] = useState(getActiveCurrency());
   const [contract, setContract] = useState(null);
   const [deliverables, setDeliverables] = useState([]);
   const [isOrderCaptured, setIsOrderCaptured] = useState(false);
@@ -314,6 +316,11 @@ export default function App() {
           treasury={treasury}
           onOpenTour={() => setIsTourOpen(true)}
           paypalConfig={paypalConfig}
+          currency={currency}
+          onToggleCurrency={(newCur) => {
+            setCurrency(newCur);
+            setActiveCurrency(newCur);
+          }}
         />
 
         {/* 7-Stage Autonomous Commerce Architecture Pipeline Strip */}

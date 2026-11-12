@@ -7,7 +7,7 @@
   },
   "treasury": {
     "currency": "USD",
-    "totalEscrowLocked": 23516.15,
+    "totalEscrowLocked": 25724.15,
     "totalSettledVolume": 7315.5,
     "disputedVolume": 3200,
     "liquidVaultBalance": 84520,
@@ -17,6 +17,195 @@
     "averageSettlementLatency": "1.4s"
   },
   "contracts": [
+    {
+      "contractId": "NP-CTR-006B5CA9",
+      "scenarioId": "gpu_procurement",
+      "title": "Autonomous H100 GPU Cluster Procurement",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas assesses budget ceiling $2400, proposes $2040 tranche to secure H100 cluster with milestone escrow",
+          "message": "Atlas RFQ: $2040 for H100 cluster, 50% upfront, 50% on delivery, 99.9% uptime SLA",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.9% uptime, <15ms peer latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T12:56:30.755Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes calculates margin, confirms capacity for 8 H100 nodes, commits to <15ms latency SLA",
+          "message": "Hermes counter: $2304, 6-node cluster, 99.9% uptime guarantee, <15ms peer latency",
+          "proposal": {
+            "budget": 2304,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T12:56:31.755Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas invokes Themis AI Arbiter dispute covenants, converges at $2208 with PayPal escrow binding",
+          "message": "Atlas final: $2208 agreement, PayPal Orders v2, binding escrow, SLA locked",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T12:56:32.755Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographically accepts $2208, triggers PayPal Orders v2, confirms capacity commitment",
+          "message": "Hermes confirms: $2208 accepted, PayPal Orders v2 created, capacity committed",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T12:56:33.755Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "88R28558YU7301505",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794488194755",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-ub3bd53174356@business.example.com",
+              "merchant_id": "5BSJMGX85KRBE",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-006B5CA9]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-006B5CA9]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T12:56:36Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/88R28558YU7301505",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=88R28558YU7301505",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/88R28558YU7301505",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/88R28558YU7301505/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 2262,
+        "tokens": 1157
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Cluster Provisioning & Environment Benchmark",
+          "share": 0.25,
+          "proofType": "CUDA_BENCHMARK_HASH",
+          "expectedProof": "pass: 16x SXM5 H100 nodes initialized, 3.2Tbps NVLink verified",
+          "milestoneIndex": 1,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Distributed Training Job Execution (48h)",
+          "share": 0.5,
+          "proofType": "WEIGHT_CHECKPOINT_HASH",
+          "expectedProof": "checkpoint_epoch_10_loss_0.142_sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "milestoneIndex": 2,
+          "amount": 1104,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Final Latency & SLA Validation Signoff",
+          "share": 0.25,
+          "proofType": "TELEMETRY_LOG_AUDIT",
+          "expectedProof": "100% SLA compliance, 0 dropped frames, cluster deprovisioned cleanly",
+          "milestoneIndex": 3,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T12:56:36.470Z"
+    },
     {
       "contractId": "NP-CTR-D38DA4B3",
       "scenarioId": "gpu_procurement",
@@ -1043,6 +1232,23 @@
     }
   ],
   "transactions": [
+    {
+      "id": "TXN-D43EF6-PP",
+      "timestamp": "2026-11-12T12:56:36.472Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "High-Performance Cloud Infrastructure",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "88R28558YU7301505",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
     {
       "id": "TXN-6BE1D4-PP",
       "timestamp": "2026-11-12T12:26:34.285Z",

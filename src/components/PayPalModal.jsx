@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { X, Lock, ShieldCheck, CheckCircle2, ArrowRight, DollarSign, Zap, ExternalLink } from 'lucide-react';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, formatDualCurrency } from '../utils/formatters';
 import { paypalService } from '../services/paypalService';
 
 export default function PayPalModal({
@@ -64,7 +64,7 @@ export default function PayPalModal({
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400">Total Escrow Commitment:</span>
             <span className="text-xl font-bold font-mono text-sky-400">
-              {formatCurrency(orderAmount)}
+              {formatDualCurrency(orderAmount)}
             </span>
           </div>
 
