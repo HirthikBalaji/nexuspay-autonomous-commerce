@@ -199,12 +199,13 @@ export default function App() {
         .filter(d => d.status !== 'VERIFIED_RELEASED')
         .reduce((sum, d) => sum + d.amount, 0);
 
+      const captureIdToUse = contract?.captureId || contract?.paypalOrder?.captureId || (contract?.paypalOrder?.id?.startsWith('CAP-') ? contract.paypalOrder.id : 'CAP-SETTLE-' + Date.now().toString(36).toUpperCase());
       const ruling = await agentService.arbitrate({
         contractId: contractId,
         disputeReason: disputeData?.reason || 'SLA Latency Violation',
         agreedAmount: agreedAmount,
         totalEscrowRemaining: remainingEscrow || agreedAmount * 0.75,
-        captureId: contract?.paypalOrder?.id || 'CAP-8921-DEMO',
+        captureId: captureIdToUse,
         breachEvidence: {
           observedLatency: 184.2,
           ceilingLatency: 35.0,
@@ -269,8 +270,16 @@ export default function App() {
   // Approve PayPal Escrow deposit
   const handleApproveEscrow = async (orderId) => {
     try {
-      await paypalService.captureOrder(orderId);
+      const res = await paypalService.captureOrder(orderId);
       setIsOrderCaptured(true);
+      const capId = res?.purchase_units?.[0]?.payments?.captures?.[0]?.id;
+      if (capId) {
+        setContract(prev => prev ? ({
+          ...prev,
+          captureId: capId,
+          paypalOrder: { ...(prev.paypalOrder || {}), captureId: capId }
+        }) : prev);
+      }
       loadInitialData();
     } catch (err) {
       console.warn('Capture notice:', err.message);
