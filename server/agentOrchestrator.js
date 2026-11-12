@@ -59,7 +59,7 @@ export const DEMO_SCENARIOS = {
     supplier: {
       id: 'AGENT_HERMES_09',
       name: 'Hermes (Aetheria Compute Nodes)',
-      wallet: 'billing@aetheria-cloud.ai',
+      wallet: 'sb-cypwr48956075@business.example.com',
       reputationScore: 98.4
     },
     deliverables: [
@@ -651,9 +651,10 @@ export async function verifyAndReleaseMilestone({
   };
 
   // 5. Execute PayPal Payouts API
+  const designatedPayoutAccount = process.env.PAYPAL_PAYOUT_RECEIVER || 'sb-cypwr48956075@business.example.com';
   const payoutResult = await sendMilestonePayout({
     senderBatchId: `BATCH_${contractId}_M${milestoneIndex}`,
-    receiverEmail: supplierWallet || 'billing@aetheria-cloud.ai',
+    receiverEmail: supplierWallet || designatedPayoutAccount,
     amount: amount,
     currency: 'USD',
     note: `NexusPay CAVE-Verified Milestone #${milestoneIndex} Release: ${deliverable?.name || 'Deliverable'}`
@@ -732,7 +733,7 @@ export async function runThemisArbitration({
   // Payout the remaining legitimate supplier balance
   const supplierPayout = await sendMilestonePayout({
     senderBatchId: `ARB_SETTLE_${contractId}`,
-    receiverEmail: 'billing@aetheria-cloud.ai',
+    receiverEmail: process.env.PAYPAL_PAYOUT_RECEIVER || 'sb-cypwr48956075@business.example.com',
     amount: supplierReleaseAmount,
     currency: 'USD',
     note: `Themis AI Arbiter Ruling: ${Math.round(supplierPercentage * 100)}% Partial Settlement`
@@ -916,9 +917,10 @@ export async function runAutonomousProcurementWorkflow({ prompt }) {
   };
 
   // Step 5: Automated Payment Disbursement (PayPal Payouts v1) -> COMPLETED
+  const targetPayoutReceiver = process.env.PAYPAL_PAYOUT_RECEIVER || 'sb-cypwr48956075@business.example.com';
   const vendorPayout = await sendMilestonePayout({
     senderBatchId: `PROCURE_PAY_${Date.now()}`,
-    receiverEmail: 'vendor-apex-hardware@compute.ai',
+    receiverEmail: targetPayoutReceiver,
     amount: negotiatedPrice,
     currency: 'USD',
     note: 'Full Settlement: ASUS ROG Strix SCAR 18 (RTX 4090) Procurement - Unit Delivered & Verified'
@@ -979,10 +981,10 @@ export async function runAutonomousProcurementWorkflow({ prompt }) {
         title: 'Vendor Payment Disbursement & Final Settlement (PayPal Payouts v1)',
         status: 'COMPLETED',
         badge: 'PayPal Payouts v1 Rail',
-        summary: `Full payment of $${negotiatedPrice.toLocaleString()} USD disbursed directly to vendor-apex-hardware@compute.ai. Transaction settled. Zero balance pending.`,
+        summary: `Full payment of $${negotiatedPrice.toLocaleString()} USD disbursed directly to ${targetPayoutReceiver}. Transaction settled. Zero balance pending.`,
         payoutBatchId: payoutBatchId,
         payoutStatus: 'COMPLETED',
-        receiverEmail: 'vendor-apex-hardware@compute.ai',
+        receiverEmail: targetPayoutReceiver,
         disbursedAmount: negotiatedPrice,
         currency: 'USD',
         paypalResourceUrl: `https://api.sandbox.paypal.com/v1/payments/payouts/${payoutBatchId}`

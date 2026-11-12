@@ -14,7 +14,7 @@ const QUICK_PROMPTS = [
   },
   {
     label: '💰 Disburse $250 Milestone Payout',
-    prompt: 'Deliverable verified by Argus-7 CAVE audit. Disburse a $250.00 USD milestone release to vendor-apex-hardware@compute.ai via PayPal Payouts.'
+    prompt: 'Deliverable verified by Argus-7 CAVE audit. Disburse a $250.00 USD milestone release to sb-cypwr48956075@business.example.com via PayPal Payouts.'
   },
   {
     label: '🔒 Lock $2,200 in Escrow (Orders v2)',

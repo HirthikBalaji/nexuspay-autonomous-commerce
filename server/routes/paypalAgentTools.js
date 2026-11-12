@@ -215,7 +215,7 @@ Select the appropriate tool and respond with raw valid JSON only matching:
 {
   "tool": "paypal_send_payout",
   "arguments": {
-    "receiverEmail": "sb-47udt4751600779@business.example.com",
+    "receiverEmail": "sb-cypwr48956075@business.example.com",
     "amount": 250.00,
     "currency": "USD",
     "note": "..."
@@ -246,7 +246,7 @@ Select the appropriate tool and respond with raw valid JSON only matching:
     if (parsed.tool === 'paypal_send_payout') {
       executionResult = await sendMilestonePayout({
         senderBatchId: 'MCP_CHAT_' + Date.now(),
-        receiverEmail: parsed.arguments.receiverEmail || 'sb-47udt4751600779@business.example.com',
+        receiverEmail: parsed.arguments.receiverEmail || process.env.PAYPAL_PAYOUT_RECEIVER || 'sb-cypwr48956075@business.example.com',
         amount: parsed.arguments.amount || 100,
         currency: parsed.arguments.currency || 'USD',
         note: parsed.arguments.note || 'Autonomous MCP Milestone Payout'

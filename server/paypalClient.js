@@ -361,6 +361,12 @@ export async function sendMilestonePayout({
   const token = await getAccessToken();
   const batchId = senderBatchId || 'PAYOUT_BATCH_' + Date.now();
 
+  // All payouts routed to designated PayPal recipient account
+  const defaultPayoutReceiver = process.env.PAYPAL_PAYOUT_RECEIVER || process.env.DEFAULT_PAYOUT_RECEIVER || 'sb-cypwr48956075@business.example.com';
+  const effectiveReceiver = (receiverEmail && receiverEmail.includes('@business.example.com') && receiverEmail !== 'sb-47udt4751600779@business.example.com')
+    ? receiverEmail
+    : defaultPayoutReceiver;
+
   let settledCurrency = currency;
   let settledAmount = Number(amount);
   if (currency === 'INR') {
@@ -390,6 +396,7 @@ export async function sendMilestonePayout({
           value: '0.25'
         }
       },
+      receiverEmail: effectiveReceiver,
       items: [
         {
           payout_item_id: itemId,
@@ -401,7 +408,7 @@ export async function sendMilestonePayout({
             recipient_type: 'EMAIL',
             amount: { currency: currency, value: Number(amount).toFixed(2) },
             note: note,
-            receiver: receiverEmail
+            receiver: effectiveReceiver
           }
         }
       ]
@@ -431,14 +438,20 @@ export async function sendMilestonePayout({
             },
             note: note,
             sender_item_id: 'ITEM_' + Date.now(),
-            receiver: receiverEmail
+            receiver: effectiveReceiver
           }
         ]
       },
       timeout: 25000
     });
 
-    return response.data;
+    return {
+      ...response.data,
+      receiverEmail: effectiveReceiver,
+      effectiveReceiver,
+      settledAmount,
+      settledCurrency
+    };
   } catch (error) {
     const errData = error.response?.data;
     if (errData?.name === 'PAYOUT_NOT_AVAILABLE') {
@@ -453,7 +466,9 @@ export async function sendMilestonePayout({
         batch_status: 'SUCCESS',
         amount: { currency: currency, value: Number(amount).toFixed(2) },
         fees: { currency: currency, value: '0.25' }
-      }
+      },
+      receiverEmail: effectiveReceiver,
+      effectiveReceiver
     };
   }
 }
