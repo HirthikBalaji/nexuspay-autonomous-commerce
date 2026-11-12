@@ -12,30 +12,40 @@ const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS || 'openrouter/a
 export const ALL_CANDIDATE_MODELS = Array.from(new Set([PRIMARY_MODEL, ...FALLBACK_MODELS]));
 
 /**
- * Cleanly extract JSON from model output that might include markdown code fences
+ * Cleanly extract and repair JSON from model output that might include markdown code fences or minor truncation
  */
 export function extractJsonFromLlm(rawText) {
   if (!rawText || typeof rawText !== 'string') return null;
   let text = rawText.trim();
 
   // Strip code fences: ```json ... ``` or ``` ... ```
-  if (text.startsWith('```')) {
-    text = text.replace(/^```[a-zA-Z]*\n?/, '').replace(/```\s*$/, '').trim();
-  }
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
 
   // Look for the outermost JSON object { ... }
   const firstBrace = text.indexOf('{');
+  if (firstBrace === -1) return null;
+
   const lastBrace = text.lastIndexOf('}');
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+  if (lastBrace !== -1 && lastBrace > firstBrace) {
     try {
       return JSON.parse(text.slice(firstBrace, lastBrace + 1));
     } catch {
-      // Continue to next heuristic
+      // Continue to repair heuristic
     }
   }
 
+  // Graceful repair heuristic for slightly truncated streaming/token limit outputs
   try {
-    return JSON.parse(text);
+    let candidate = text.slice(firstBrace);
+    // If odd number of unescaped quotes, close trailing string
+    const quoteMatches = candidate.match(/(?<!\\)"/g) || [];
+    if (quoteMatches.length % 2 !== 0) {
+      candidate += '"';
+    }
+    if (!candidate.endsWith('}')) {
+      candidate += '}';
+    }
+    return JSON.parse(candidate);
   } catch {
     return null;
   }
@@ -307,13 +317,13 @@ Analyze the following contractual breach evidence and deliver a judicial ruling:
 
 Requirements:
 - Calculate an equitable clawback percentage between 35% and 55% based on breach severity.
-- Produce an authoritative legal summary citing contractual covenants and automated PayPal refund actions.
+- Keep "summary" concise (1-2 sentences) citing telemetry evidence and automated PayPal refund actions.
 - Output MUST be valid JSON only matching this schema:
 {
   "clawbackPercentage": 0.45,
   "confidenceScore": 0.988,
   "verdict": "PARTIAL_BREACH_ENFORCEMENT",
-  "summary": "Authoritative judicial summary detailing telemetry evidence, covenant clauses, and exact PayPal refund instructions.",
+  "summary": "Authoritative judicial summary citing SLA breach and automated PayPal clawback.",
   "buyerContention": "Atlas mandated multi-region fallback redundancy in Section 3.1",
   "supplierContention": "Hermes claimed upstream cloud network routing disruption beyond agent control"
 }`;
@@ -325,7 +335,8 @@ Requirements:
       { role: 'user', content: prompt }
     ],
     temperature: 0.25,
-    maxTokens: 800
+    maxTokens: 1200,
+    timeoutMs: 15000
   });
 
   if (llmRes.success) {

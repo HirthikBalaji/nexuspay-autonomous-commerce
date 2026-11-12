@@ -66,7 +66,7 @@ export async function getAccessToken() {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       data: 'grant_type=client_credentials',
-      timeout: 10000
+      timeout: 20000
     });
 
     cachedToken = response.data.access_token;
@@ -107,7 +107,7 @@ export async function testPayPalConnection() {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       data: 'grant_type=client_credentials',
-      timeout: 8000
+      timeout: 20000
     });
 
     const latencyMs = Date.now() - startTime;
@@ -252,7 +252,7 @@ export async function createOrder({
           cancel_url: 'https://nexuspay.local/api/paypal/cancel'
         }
       },
-      timeout: 12000
+      timeout: 25000
     });
 
     if (fxMetadata) {
@@ -326,7 +326,7 @@ export async function captureOrder(orderId) {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      timeout: 12000
+      timeout: 25000
     });
 
     return response.data;
@@ -435,7 +435,7 @@ export async function sendMilestonePayout({
           }
         ]
       },
-      timeout: 12000
+      timeout: 25000
     });
 
     return response.data;
@@ -498,7 +498,7 @@ export async function refundCapture({ captureId, amount, currency = 'USD', reaso
         },
         note_to_payer: reason
       },
-      timeout: 12000
+      timeout: 25000
     });
 
     return response.data;
@@ -559,7 +559,7 @@ export async function verifyWebhookSignature({
         webhook_id: webhookId || 'WH-LOCAL-MOCK',
         webhook_event: webhookEvent
       },
-      timeout: 10000
+      timeout: 20000
     });
 
     return response.data;
@@ -604,7 +604,7 @@ export async function listCustomerDisputes() {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      timeout: 10000
+      timeout: 20000
     });
 
     return response.data;

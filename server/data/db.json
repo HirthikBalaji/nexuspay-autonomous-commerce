@@ -7,8 +7,8 @@
   },
   "treasury": {
     "currency": "USD",
-    "totalEscrowLocked": 29956.15,
-    "totalSettledVolume": 7315.5,
+    "totalEscrowLocked": 33958.15,
+    "totalSettledVolume": 9523.5,
     "disputedVolume": 3200,
     "liquidVaultBalance": 84520,
     "activeAgentsCount": 17,
@@ -17,6 +17,573 @@
     "averageSettlementLatency": "1.4s"
   },
   "contracts": [
+    {
+      "contractId": "NP-CTR-BED18398",
+      "scenarioId": "gpu_procurement",
+      "title": "Autonomous H100 Cluster Procurement",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas assesses $2400 ceiling, proposes $2040 tranche with milestone escrow",
+          "message": "Atlas RFQ: 4 H100 clusters, $2040 initial tranche, 15% milestone escrow",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.95% uptime, <15ms latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T16:05:58.160Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes calculates 10% margin, confirms capacity for 4 clusters",
+          "message": "Hermes counter: $2304 total, 99.95% uptime SLA, <15ms latency",
+          "proposal": {
+            "budget": 2304,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T16:05:59.160Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas invokes Themis AI Arbiter covenants for final agreement",
+          "message": "Atlas final: $2208 total, PayPal escrow binding, SLA locked",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T16:06:00.160Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographically accepts, triggers PayPal Orders v2 creation",
+          "message": "Hermes confirms: $2208 accepted, capacity committed, order v2 initiated",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T16:06:01.161Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "86517601RF060754P",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794499563003",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-47udt4751600779@business.example.com",
+              "merchant_id": "ZUZNTPMDEYDNU",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous H100 Cluster Procurement [NP-CTR-BED18398]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: Autonomous H100 Cluster Procurement [NP-CTR-BED18398]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T16:06:04Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/86517601RF060754P",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=86517601RF060754P",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/86517601RF060754P",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/86517601RF060754P/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 3729,
+        "tokens": 1075
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Phase 1: Autonomous H100 Cluster Procurement - Environment Setup & Verification",
+          "share": 0.25,
+          "proofType": "ENVIRONMENT_BENCHMARK_HASH",
+          "expectedProof": "Environment verified: Autonomous H100 Cluster Procurement initialized with cryptographic handshake.",
+          "amount": 552,
+          "milestoneIndex": 1,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Phase 2: Autonomous H100 Cluster Procurement - Core Execution & Performance SLA",
+          "share": 0.5,
+          "proofType": "EXECUTION_TELEMETRY_LOG",
+          "expectedProof": "Execution log validated: Core deliverables generated and benchmarked against SLA thresholds.",
+          "amount": 1104,
+          "milestoneIndex": 2,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Phase 3: Autonomous H100 Cluster Procurement - Final Validation & Delivery Signoff",
+          "share": 0.25,
+          "proofType": "MERKLE_ROOT_SIGNOFF",
+          "expectedProof": "Final cryptographic signoff verified by NovaCorp Verifier Agent.",
+          "amount": 552,
+          "milestoneIndex": 3,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T16:06:03.651Z"
+    },
+    {
+      "contractId": "NP-CTR-10864D0D",
+      "scenarioId": "ai_security_audit",
+      "title": "Autonomous Smart Contract & LLM Red-Teaming Audit",
+      "agreedAmount": 1794,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 1950,
+        "slaRequirement": "Complete penetration fuzzing, zero false-negative criticals, <24h SLA"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_04",
+        "name": "Hermes (Specter Autonomous RedTeam)",
+        "wallet": "contracts@specter-security.ai",
+        "reputationScore": 89.1
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas internal reasoning assessing spend limits and milestone escrow requirements",
+          "message": "Atlas RFQ message proposing initial tranche offer around $1657.5",
+          "proposal": {
+            "budget": 1657.5,
+            "milestones": 3,
+            "sla": "Complete penetration fuzzing, zero false-negative criticals, <24h SLA",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T16:01:31.411Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Specter Autonomous RedTeam)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes margin calculation and capacity commitment",
+          "message": "Hermes counter proposal around $1872 with SLA commitment",
+          "proposal": {
+            "budget": 1872,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T16:01:32.411Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas convergence rationale invoking Themis AI Arbiter dispute covenants",
+          "message": "Atlas final agreement at $1794 with binding PayPal escrow terms",
+          "proposal": {
+            "budget": 1794,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T16:01:33.412Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Specter Autonomous RedTeam)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographic acceptance and PayPal Orders v2 creation trigger",
+          "message": "Hermes signing confirmation committing capacity",
+          "proposal": {
+            "budget": 1794,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T16:01:34.412Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "63D01702RE471283G",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794499295418",
+            "amount": {
+              "currency_code": "USD",
+              "value": "1794.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "1794.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-47udt4751600779@business.example.com",
+              "merchant_id": "ZUZNTPMDEYDNU",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous Smart Contract & LLM Red-Teaming Audit [NP-CTR-10864D0D]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_04",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: Autonomous Smart Contract & LLM Red-Teaming Audit [NP-CTR-10864D0D]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "1794.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T16:01:37Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/63D01702RE471283G",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=63D01702RE471283G",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/63D01702RE471283G",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/63D01702RE471283G/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 10389,
+        "tokens": 1009
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Attack Surface Reconnaissance & Threat Modeling",
+          "share": 0.3,
+          "proofType": "THREAT_VECTOR_MATRIX",
+          "expectedProof": "42 endpoints mapped, 11 potential injection vectors identified",
+          "milestoneIndex": 1,
+          "amount": 538.2,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Dynamic Exploit Payload Fuzzing & Proof-of-Concept",
+          "share": 0.4,
+          "proofType": "FUZZ_TELEMETRY_LOG",
+          "expectedProof": "500,000 synthetic exploits executed; 1 medium vulnerability confirmed",
+          "milestoneIndex": 2,
+          "amount": 717.6,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Cryptographic Executive Remediation Package",
+          "share": 0.3,
+          "proofType": "SIGNED_VERIFICATION_CERT",
+          "expectedProof": "Signed mitigation proof with regression harness",
+          "milestoneIndex": 3,
+          "amount": 538.2,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T16:01:36.793Z"
+    },
+    {
+      "contractId": "NP-CTR-33EC444D",
+      "scenarioId": "gpu_procurement",
+      "title": "Autonomous H100 GPU Cluster Procurement",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas internal reasoning assessing spend limits and milestone escrow requirements",
+          "message": "Atlas RFQ message proposing initial tranche offer around $2040",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.9% uptime, <15ms peer latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T15:45:54.975Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes margin calculation and capacity commitment",
+          "message": "Hermes counter proposal around $2304 with SLA commitment",
+          "proposal": {
+            "budget": 2304,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T15:45:55.975Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas convergence rationale invoking Themis AI Arbiter dispute covenants",
+          "message": "Atlas final agreement at $2208 with binding PayPal escrow terms",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T15:45:56.975Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographic acceptance and PayPal Orders v2 creation trigger",
+          "message": "Hermes signing confirmation committing capacity",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T15:45:57.975Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "4X119792RK680943T",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794498358975",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-47udt4751600779@business.example.com",
+              "merchant_id": "ZUZNTPMDEYDNU",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-33EC444D]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-33EC444D]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T15:46:01Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4X119792RK680943T",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=4X119792RK680943T",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4X119792RK680943T",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4X119792RK680943T/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 3113,
+        "tokens": 1013
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Cluster Provisioning & Environment Benchmark",
+          "share": 0.25,
+          "proofType": "CUDA_BENCHMARK_HASH",
+          "expectedProof": "pass: 16x SXM5 H100 nodes initialized, 3.2Tbps NVLink verified",
+          "milestoneIndex": 1,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Distributed Training Job Execution (48h)",
+          "share": 0.5,
+          "proofType": "WEIGHT_CHECKPOINT_HASH",
+          "expectedProof": "checkpoint_epoch_10_loss_0.142_sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "milestoneIndex": 2,
+          "amount": 1104,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Final Latency & SLA Validation Signoff",
+          "share": 0.25,
+          "proofType": "TELEMETRY_LOG_AUDIT",
+          "expectedProof": "100% SLA compliance, 0 dropped frames, cluster deprovisioned cleanly",
+          "milestoneIndex": 3,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T15:46:00.543Z"
+    },
     {
       "contractId": "NP-CTR-54CEAB17",
       "scenarioId": "gpu_procurement",
@@ -1611,8 +2178,42 @@
   ],
   "transactions": [
     {
-      "id": "TXN-5670C2-PP",
-      "timestamp": "2026-11-12T15:33:26.955Z",
+      "id": "TXN-C57905-PP",
+      "timestamp": "2026-11-12T16:06:03.660Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "Custom Autonomous RFP",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "86517601RF060754P",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
+    {
+      "id": "TXN-1BEDF0-PP",
+      "timestamp": "2026-11-12T16:01:36.804Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Specter Autonomous RedTeam)",
+      "category": "Cybersecurity & Financial Escrow",
+      "amount": 1794,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "63D01702RE471283G",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
+    {
+      "id": "TXN-227C39-PP",
+      "timestamp": "2026-11-12T15:46:00.548Z",
       "buyerAgent": "Atlas (NovaCorp Procurement)",
       "supplierAgent": "Hermes (Aetheria Compute Nodes)",
       "category": "High-Performance Cloud Infrastructure",
@@ -1620,6 +2221,23 @@
       "currency": "USD",
       "milestoneStage": "Escrow Locked",
       "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "4X119792RK680943T",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
+    {
+      "id": "TXN-5670C2-PP",
+      "timestamp": "2026-11-12T15:33:26.955Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "High-Performance Cloud Infrastructure",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Completed",
+      "milestoneProgress": 100,
       "riskScore": 10,
       "slaHealth": 99.8,
       "paypalReference": "9LR558574L232320G",
@@ -1938,6 +2556,22 @@
     }
   ],
   "webhooks": [
+    {
+      "id": "WH-EVT-2YDBAZ",
+      "event_type": "PAYMENT.PAYOUTSBATCH.SUCCESS",
+      "resource_type": "payouts",
+      "summary": "Automated milestone payout of $15.00 released to sb-47udt4751600779@business.example.com",
+      "create_time": "2026-11-12T16:06:15.891Z",
+      "status": "PROCESSED"
+    },
+    {
+      "id": "WH-EVT-AGFPJV",
+      "event_type": "PAYMENT.PAYOUTSBATCH.SUCCESS",
+      "resource_type": "payouts",
+      "summary": "Automated milestone payout of $1104.00 released to billing@aetheria-cloud.ai",
+      "create_time": "2026-11-12T15:43:56.053Z",
+      "status": "PROCESSED"
+    },
     {
       "id": "WH-EVT-LMIEXA",
       "event_type": "PAYMENT.PAYOUTSBATCH.SUCCESS",
