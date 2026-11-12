@@ -9,6 +9,7 @@ import paypalRoutes from './routes/paypalRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import telemetryRoutes from './routes/telemetryRoutes.js';
 import sponsorRoutes from './routes/sponsorRoutes.js';
+import paypalAgentTools from './routes/paypalAgentTools.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/api/paypal/agent-tools', paypalAgentTools);
 app.use('/api/paypal', paypalRoutes);
 app.use('/api/agent', agentRoutes);
 app.use('/api/telemetry', telemetryRoutes);

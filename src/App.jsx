@@ -303,6 +303,7 @@ export default function App() {
           onRefresh={loadInitialData}
           treasury={treasury}
           onOpenTour={() => setIsTourOpen(true)}
+          paypalConfig={paypalConfig}
         />
 
         {/* View Content Body */}

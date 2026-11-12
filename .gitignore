@@ -5,3 +5,4 @@ dist
 *.log
 server/data/*.tmp*
 
+server/data/db.json

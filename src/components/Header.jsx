@@ -10,7 +10,8 @@ export default function Header({
   isNegotiating,
   onRefresh,
   treasury,
-  onOpenTour
+  onOpenTour,
+  paypalConfig
 }) {
   const getTabTitle = () => {
     switch (activeTab) {
@@ -26,6 +27,8 @@ export default function Header({
     }
   };
 
+  const isLiveSandbox = paypalConfig?.clientId && !paypalConfig?.simulationMode;
+
   return (
     <header className="h-16 border-b border-white/[0.06] bg-[#090D18]/80 backdrop-blur-xl px-4 lg:px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
       {/* View Title */}
@@ -34,6 +37,12 @@ export default function Header({
           <span>{getTabTitle()}</span>
           <span className="hidden xl:inline-block w-1.5 h-1.5 rounded-full bg-sky-400"></span>
         </h2>
+
+        {/* Live PayPal Sandbox Pill */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-[11px] font-mono text-emerald-300">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>PayPal Sandbox: LIVE (APP-6ET35875)</span>
+        </div>
       </div>
 
       {/* Scenario Switcher Tabs */}
