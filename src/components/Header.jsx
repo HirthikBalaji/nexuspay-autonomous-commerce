@@ -15,15 +15,15 @@ export default function Header({
 }) {
   const getTabTitle = () => {
     switch (activeTab) {
-      case 'escrow': return 'Autonomous Escrow & Clearinghouse';
-      case 'negotiation': return 'Multi-Agent Negotiation Arena';
-      case 'themis': return 'Themis AI Arbitration Court';
-      case 'grid': return 'AG Grid Enterprise Fleet Telemetry';
-      case 'bryntum': return 'Bryntum Milestone Gantt & Scheduler';
-      case 'channel3': return 'Channel3 Agentic Commerce Catalog';
-      case 'elastic': return 'Elastic Vector Search & Anomaly Log';
-      case 'devhub': return 'Postman API Runner & APIMatic DevHub';
-      default: return 'NexusPay Platform';
+      case 'channel3': return 'Stage 1: Discovery Layer (Channel3 Agentic Catalog)';
+      case 'negotiation': return 'Stage 2: Negotiation Layer (OpenRouter Multi-Agent LLM)';
+      case 'escrow': return 'Stage 3: Settlement Rails (PayPal Smart Escrow Vault & Orders v2)';
+      case 'bryntum': return 'Stage 4: Execution Timeline (Bryntum Milestone Gantt)';
+      case 'elastic': return 'Stage 5: Telemetry Watchdog (Elastic 1,536-dim Vector kNN Search)';
+      case 'themis': return 'Stage 6: Judicial Arbiter (Themis AI Arbitration Court & Refunds)';
+      case 'grid': return 'Stage 7: Treasury Terminal (AG Grid Fleet Risk Console)';
+      case 'devhub': return 'Developer Protocol (Postman API Runner & APIMatic MCP Hub)';
+      default: return 'NexusPay: Autonomous Agent Commerce Architecture';
     }
   };
 

@@ -36,18 +36,10 @@ export default function HeroBanner({
               and <strong className="text-white font-medium">PayPal Milestone Smart Escrow</strong> with sub-second <strong className="text-sky-400 font-medium">Themis AI Dispute Arbitration</strong>.
             </p>
 
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs">
-              <span className="flex items-center gap-1.5 text-slate-300">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Zero-Trust Spend Mandates</span>
-              </span>
-              <span className="flex items-center gap-1.5 text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-sky-400" />
-                <span>PayPal Orders v2 & Payouts API</span>
-              </span>
-              <span className="flex items-center gap-1.5 text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-amber-400" />
-                <span>AG Grid Real-time Telemetry</span>
+            <div className="mt-4 flex flex-wrap items-center gap-2.5 text-xs">
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-300">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>7-Subsystem Machine: Discovery (Channel3) • Negotiation (OpenRouter LLM) • Settlement (PayPal Vault) • Execution (Bryntum) • Watchdog (Elastic) • Arbiter (Themis) • Treasury (AG Grid)</span>
               </span>
             </div>
           </div>

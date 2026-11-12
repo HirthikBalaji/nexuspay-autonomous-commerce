@@ -15,7 +15,8 @@ import {
   Wifi, 
   Sparkles,
   ExternalLink,
-  Trophy
+  Trophy,
+  ArrowRight
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -28,18 +29,81 @@ export default function Sidebar({
   treasury,
   onOpenTour
 }) {
-  const mainNav = [
-    { id: 'escrow', label: 'Dashboard & Escrow', icon: LayoutDashboard, badge: 'Live' },
-    { id: 'negotiation', label: 'Negotiation Arena', icon: MessageSquare, badge: 'Agents' },
-    { id: 'themis', label: 'Themis AI Court', icon: Scale, badge: 'Arbiter' },
+  const lifecycleNav = [
+    { 
+      step: 1, 
+      id: 'channel3', 
+      label: '1. Discovery Layer', 
+      engine: 'Channel3 Catalog', 
+      icon: ShoppingCart, 
+      badge: 'Discovery', 
+      color: 'text-purple-400' 
+    },
+    { 
+      step: 2, 
+      id: 'negotiation', 
+      label: '2. Negotiation Layer', 
+      engine: 'OpenRouter LLM', 
+      icon: MessageSquare, 
+      badge: 'AI Deliberation', 
+      color: 'text-indigo-400' 
+    },
+    { 
+      step: 3, 
+      id: 'escrow', 
+      label: '3. Settlement Rails', 
+      engine: 'PayPal Orders & Vault', 
+      icon: LayoutDashboard, 
+      badge: 'Escrow Core', 
+      color: 'text-sky-400' 
+    },
+    { 
+      step: 4, 
+      id: 'bryntum', 
+      label: '4. Execution Timeline', 
+      engine: 'Bryntum Gantt SDK', 
+      icon: Clock, 
+      badge: 'Scheduler', 
+      color: 'text-emerald-400' 
+    },
+    { 
+      step: 5, 
+      id: 'elastic', 
+      label: '5. Telemetry Watchdog', 
+      engine: 'Elastic 1,536-dim Vectors', 
+      icon: Search, 
+      badge: 'Anomaly Log', 
+      color: 'text-cyan-400' 
+    },
+    { 
+      step: 6, 
+      id: 'themis', 
+      label: '6. Judicial Arbiter', 
+      engine: 'Themis AI Arbitration', 
+      icon: Scale, 
+      badge: 'PayPal Refunds', 
+      color: 'text-rose-400' 
+    },
+    { 
+      step: 7, 
+      id: 'grid', 
+      label: '7. Treasury Terminal', 
+      engine: 'AG Grid Telemetry', 
+      icon: Layers, 
+      badge: 'Risk Monitor', 
+      color: 'text-amber-400' 
+    },
   ];
 
-  const sponsorNav = [
-    { id: 'grid', label: 'AG Grid Telemetry', icon: Layers, badge: '$5K Prize', color: 'text-amber-400' },
-    { id: 'bryntum', label: 'Bryntum Gantt', icon: Clock, badge: 'Gantt', color: 'text-emerald-400' },
-    { id: 'channel3', label: 'Channel3 Market', icon: ShoppingCart, badge: 'Catalog', color: 'text-purple-400' },
-    { id: 'elastic', label: 'Elastic Search', icon: Search, badge: 'Vectors', color: 'text-cyan-400' },
-    { id: 'devhub', label: 'Postman & APIMatic', icon: Terminal, badge: 'API Hub', color: 'text-orange-400' },
+  const developerNav = [
+    { 
+      id: 'devhub', 
+      label: 'Developer Protocol', 
+      engine: 'Postman & APIMatic MCP', 
+      icon: Terminal, 
+      badge: 'OpenAPI', 
+      color: 'text-orange-400' 
+    }
   ];
 
   return (
@@ -86,48 +150,14 @@ export default function Sidebar({
             </button>
           )}
 
-          {/* Main Core */}
-          <div>
-            <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Autonomous Core
-            </div>
-            <div className="space-y-1">
-              {mainNav.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => onSelectTab(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                      isActive
-                        ? 'bg-[#121B30] text-white border border-sky-500/30 shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-sky-400' : 'text-slate-400'}`} />
-                      <span>{item.label}</span>
-                    </div>
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-                      isActive ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-400'
-                    }`}>
-                      {item.badge}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Sponsors Suite */}
+          {/* Unified Commerce Lifecycle Pipeline */}
           <div>
             <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-              <span>Sponsor Ecosystem</span>
-              <Sparkles className="w-3 h-3 text-sky-400" />
+              <span>Commerce Lifecycle</span>
+              <span className="text-[9px] font-mono text-sky-400 font-semibold">7 Subsystems</span>
             </div>
             <div className="space-y-1">
-              {sponsorNav.map((item) => {
+              {lifecycleNav.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
                 return (
@@ -140,11 +170,52 @@ export default function Sidebar({
                         : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 ${isActive ? item.color : 'text-slate-400'}`} />
-                      <span>{item.label}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? item.color : 'text-slate-400'}`} />
+                      <div className="text-left truncate">
+                        <div className="leading-snug truncate font-medium">{item.label}</div>
+                        <div className="text-[10px] text-slate-500 font-mono truncate">{item.engine}</div>
+                      </div>
                     </div>
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1.5 ${
+                      isActive ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-500'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Developer Protocol & Ecosystem */}
+          <div>
+            <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+              <span>Developer Protocol</span>
+              <Sparkles className="w-3 h-3 text-sky-400" />
+            </div>
+            <div className="space-y-1">
+              {developerNav.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onSelectTab(item.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                      isActive
+                        ? 'bg-[#121B30] text-white border border-sky-500/30 shadow-sm'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? item.color : 'text-slate-400'}`} />
+                      <div className="text-left truncate">
+                        <div className="leading-snug truncate font-medium">{item.label}</div>
+                        <div className="text-[10px] text-slate-500 font-mono truncate">{item.engine}</div>
+                      </div>
+                    </div>
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1.5 ${
                       isActive ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-400'
                     }`}>
                       {item.badge}

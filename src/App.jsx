@@ -10,6 +10,7 @@ import BryntumGanttView from './components/BryntumGanttView';
 import Channel3Catalog from './components/Channel3Catalog';
 import ElasticSearchConsole from './components/ElasticSearchConsole';
 import PostmanApiRunner from './components/PostmanApiRunner';
+import SponsorBar from './components/SponsorBar';
 import PayPalModal from './components/PayPalModal';
 import SettingsDrawer from './components/SettingsDrawer';
 import ApiDocsModal from './components/ApiDocsModal';
@@ -305,6 +306,9 @@ export default function App() {
           onOpenTour={() => setIsTourOpen(true)}
           paypalConfig={paypalConfig}
         />
+
+        {/* 7-Stage Autonomous Commerce Architecture Pipeline Strip */}
+        <SponsorBar activeTab={activeTab} onSelectTab={setActiveTab} />
 
         {/* View Content Body */}
         <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">

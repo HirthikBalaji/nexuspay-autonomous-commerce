@@ -35,37 +35,36 @@ export default function JudgeTourModal({
   const TOUR_STEPS = [
     {
       step: 1,
-      targetTab: 'catalog',
-      title: '1. Channel3 Dynamic Agent Commerce Catalog',
-      sponsorBadge: 'Channel3 ($1,500 Prize)',
-      description: 'Autonomous Buyer Agent discovers compute clusters with real-time spot pricing, supplier trust ratings, and 1-click RFQ dispatch.',
-      actionLabel: 'Dispatch RFQ to Agents & Open Negotiation',
+      targetTab: 'channel3',
+      title: 'Stage 1: Discovery Layer (Channel3 Catalog)',
+      sponsorBadge: 'Channel3 • Agent Discovery Protocol',
+      description: 'Autonomous Buyer Agent discovers compute clusters with real-time spot pricing, supplier trust ratings, and 1-click RFQ dispatch into the negotiation pipeline.',
+      actionLabel: 'Inspect Supplier Catalog & Dispatch RFQ',
       onExecute: () => {
-        onSelectTab('escrow');
-        onRunNegotiation();
+        onSelectTab('channel3');
         setCurrentStep(1);
       }
     },
     {
       step: 2,
-      targetTab: 'escrow',
-      title: '2. Real OpenRouter LLM Negotiation & Spend Covenants',
-      sponsorBadge: 'PayPal + AI ($5,000 Prize) • OpenRouter LLM',
-      description: 'Atlas (Buyer) and Hermes (Supplier) engage in dynamic multi-turn negotiation powered by real OpenRouter LLM inference, settling price, milestones, and SLA covenants in real time.',
-      actionLabel: 'View Agreement & Lock PayPal Escrow',
+      targetTab: 'negotiation',
+      title: 'Stage 2: Negotiation Layer (OpenRouter LLM)',
+      sponsorBadge: 'PayPal + AI • Real LLM Covenants',
+      description: 'Atlas (Buyer) and Hermes (Supplier) engage in dynamic multi-turn reasoning powered by live OpenRouter LLM inference, settling price, deliverables, and SLA covenants.',
+      actionLabel: 'Launch Negotiation & Agree Covenants',
       onExecute: () => {
-        onSelectTab('escrow');
-        onOpenPayPalModal();
+        onSelectTab('negotiation');
+        onRunNegotiation();
         setCurrentStep(2);
       }
     },
     {
       step: 3,
       targetTab: 'escrow',
-      title: '3. PayPal Smart Escrow Vault (Orders v2 API)',
-      sponsorBadge: 'PayPal Grand Prize ($12,000)',
+      title: 'Stage 3: Settlement Rails (PayPal Vault & Orders v2)',
+      sponsorBadge: 'PayPal Grand Prize • Orders v2 & Payouts API',
       description: 'Escrow commitment is securely authorized and captured into the smart clearinghouse vault via PayPal Orders v2 API with official PayPal JS SDK buttons.',
-      actionLabel: 'Verify Milestone 1 & Trigger PayPal Payout',
+      actionLabel: 'View Settlement Rails & Verify Milestone 1',
       onExecute: () => {
         onSelectTab('escrow');
         if (deliverables[0]) {
@@ -77,40 +76,36 @@ export default function JudgeTourModal({
     {
       step: 4,
       targetTab: 'bryntum',
-      title: '4. Bryntum Interactive Milestone Gantt & Critical Path',
-      sponsorBadge: 'Bryntum ($1,000 Prize)',
-      description: 'Interactive project scheduler with task dependencies, 32h critical path horizon, and automated PayPal disbursement trigger points.',
-      actionLabel: 'Trigger Milestone 2 SLA Breach & Elastic Anomaly',
+      title: 'Stage 4: Execution Timeline (Bryntum Gantt)',
+      sponsorBadge: 'Bryntum Gantt • Real @bryntum/gantt Engine',
+      description: 'Interactive execution timeline with task dependencies, 32-hour critical path horizon, draggable milestones, and milestone disbursement trigger points.',
+      actionLabel: 'Inspect Critical Path & Milestone Dependencies',
       onExecute: () => {
-        onSelectTab('escrow');
-        if (deliverables[1]) {
-          onVerifyMilestone(1, deliverables[1], true);
-        }
+        onSelectTab('bryntum');
         setCurrentStep(4);
       }
     },
     {
       step: 5,
       targetTab: 'elastic',
-      title: '5. Elastic Telemetry Search & Anomaly Detection',
-      sponsorBadge: 'Elastic Impact Prize',
-      description: 'Elasticsearch Query DSL simulator scores telemetry anomaly (0.92 critical) upon detecting a +426% latency spike (184ms vs 35ms ceiling).',
-      actionLabel: 'Escalate to Themis AI Arbiter Court',
+      title: 'Stage 5: Telemetry Watchdog (Elastic Vectors)',
+      sponsorBadge: 'Elastic • 1,536-dim SLA Vector Embeddings',
+      description: 'Elasticsearch Query DSL engine monitors agent telemetry in real-time. Detects +426% latency anomaly (184ms vs 35ms ceiling) via cosine vector similarity scoring.',
+      actionLabel: 'Inspect SLA Anomaly & Escalate to Arbiter',
       onExecute: () => {
-        onSelectTab('arbitration');
-        onEscalateToArbitration?.();
+        onSelectTab('elastic');
         setCurrentStep(5);
       }
     },
     {
       step: 6,
-      targetTab: 'arbitration',
-      title: '6. Themis AI Arbiter (Real OpenRouter LLM Judicial Ruling)',
-      sponsorBadge: 'Sub-Second Multimodal Dispute • OpenRouter LLM',
-      description: 'Themis autonomous judicial AI model calls OpenRouter in real-time to analyze telemetry logs, deliver an authoritative legal ruling on SLA covenants, and trigger PayPal Refund API + partial payout.',
-      actionLabel: 'Deliberate Case & Enforce PayPal Ruling',
+      targetTab: 'themis',
+      title: 'Stage 6: Judicial Arbiter (Themis AI Court)',
+      sponsorBadge: 'Themis AI • Live OpenRouter LLM Judicial Ruling',
+      description: 'Themis autonomous judicial model calls OpenRouter in real-time to analyze telemetry logs, deliver an authoritative legal ruling on SLA covenants, and trigger PayPal Refund API + partial payout.',
+      actionLabel: 'Deliberate Case & Enforce PayPal Refund',
       onExecute: () => {
-        onSelectTab('arbitration');
+        onSelectTab('themis');
         onRunArbitration?.();
         setCurrentStep(6);
       }
@@ -118,10 +113,10 @@ export default function JudgeTourModal({
     {
       step: 7,
       targetTab: 'grid',
-      title: '7. AG Grid Enterprise Telemetry & Circuit Breakers',
-      sponsorBadge: 'AG Grid 1st Place ($5,000 Prize)',
+      title: 'Stage 7: Treasury Risk Terminal (AG Grid Enterprise)',
+      sponsorBadge: 'AG Grid • Institutional Fleet Telemetry',
       description: 'Enterprise treasury console powered by AG Grid with live tick streaming, SVG risk gauges, sub-millisecond filtering, and 1-click agent freeze circuit breakers.',
-      actionLabel: 'Explore Full Treasury & Export CSV',
+      actionLabel: 'Explore Treasury Fleet & Export Report',
       onExecute: () => {
         onSelectTab('grid');
         onClose();

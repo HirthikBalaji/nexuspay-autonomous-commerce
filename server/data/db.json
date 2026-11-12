@@ -7,7 +7,7 @@
   },
   "treasury": {
     "currency": "USD",
-    "totalEscrowLocked": 16892.15,
+    "totalEscrowLocked": 19100.15,
     "totalSettledVolume": 7315.5,
     "disputedVolume": 3200,
     "liquidVaultBalance": 84520,

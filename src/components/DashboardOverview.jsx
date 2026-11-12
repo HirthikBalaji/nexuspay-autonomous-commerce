@@ -4,6 +4,7 @@ import NegotiationArena from './NegotiationArena';
 import EscrowTimeline from './EscrowTimeline';
 import ThemisArbiter from './ThemisArbiter';
 import AgentTelemetryGrid from './AgentTelemetryGrid';
+import LifecyclePipelineBar from './LifecyclePipelineBar';
 import { ShieldCheck, Cpu, ShieldAlert, ArrowRight, Zap, Sparkles } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
@@ -30,6 +31,9 @@ export default function DashboardOverview({
 }) {
   return (
     <div className="space-y-6">
+      {/* 7-Stage Autonomous Commerce Lifecycle Pipeline */}
+      <LifecyclePipelineBar activeTab="escrow" onSelectTab={onNavigateToTab} />
+
       {/* 4 Stat Cards */}
       <TreasuryOverview treasury={treasury} />
 
