@@ -13,6 +13,9 @@
     "start": "NODE_ENV=production node server/server.js"
   },
   "dependencies": {
+    "@bryntum/gantt": "npm:@bryntum/gantt-trial@^7.3.8",
+    "@bryntum/gantt-react": "^7.3.8",
+    "@elastic/elasticsearch": "^9.5.1",
     "@paypal/react-paypal-js": "^8.7.0",
     "ag-grid-community": "^36.3.0",
     "ag-grid-react": "^36.3.0",

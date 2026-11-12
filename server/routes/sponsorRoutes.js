@@ -1,5 +1,6 @@
 import express from 'express';
 import crypto from 'crypto';
+import { getElasticStatus, searchElastic } from '../elasticClient.js';
 
 const router = express.Router();
 
@@ -203,44 +204,43 @@ router.get('/bryntum/schedule', (req, res) => {
   });
 });
 
-// POST /api/elastic/search (Elasticsearch Query DSL Simulator)
-router.post('/elastic/search', (req, res) => {
-  const { query, index, minAnomalyScore } = req.body;
-  const q = (query || '').toLowerCase().trim();
+// GET /api/elastic/status
+router.get('/elastic/status', (req, res) => {
+  res.json(getElasticStatus());
+});
 
-  let results = ELASTIC_INDEX;
+// POST /api/elastic/search (Elasticsearch Query DSL & Real 1,536-dim Vector Search)
+router.post('/elastic/search', async (req, res) => {
+  try {
+    const { query, index, minAnomalyScore } = req.body;
+    const searchResult = await searchElastic({ query, index, minAnomalyScore });
 
-  if (index && index !== 'all') {
-    results = results.filter(doc => doc.index === index);
+    res.json({
+      tookMs: searchResult.latencyMs,
+      timedOut: false,
+      _shards: { total: 5, successful: 5, skipped: 0, failed: 0 },
+      sdkVersion: '@elastic/elasticsearch v9.5.1',
+      clusterMode: searchResult.mode,
+      statusNote: searchResult.statusNote,
+      vectorDimensions: searchResult.vectorDimensions,
+      queryVectorPreview: searchResult.queryVectorPreview,
+      dsl: searchResult.elasticDsl,
+      hits: {
+        total: { value: searchResult.totalHits, relation: 'eq' },
+        maxScore: searchResult.hits[0]?.score || 0,
+        hits: searchResult.hits.map(doc => ({
+          _index: doc.index,
+          _id: doc.id,
+          _score: doc.score,
+          cosineSimilarity: doc.cosineSimilarity,
+          _source: doc
+        }))
+      }
+    });
+  } catch (err) {
+    console.error('[Elasticsearch Search Route] Error:', err);
+    res.status(500).json({ error: err.message });
   }
-
-  if (q) {
-    results = results.filter(doc => 
-      doc.title.toLowerCase().includes(q) ||
-      doc.content.toLowerCase().includes(q) ||
-      doc.tags.some(t => t.toLowerCase().includes(q))
-    );
-  }
-
-  if (minAnomalyScore) {
-    results = results.filter(doc => doc.anomalyScore >= minAnomalyScore);
-  }
-
-  res.json({
-    tookMs: Math.floor(Math.random() * 8) + 2,
-    timedOut: false,
-    _shards: { total: 5, successful: 5, skipped: 0, failed: 0 },
-    hits: {
-      total: { value: results.length, relation: 'eq' },
-      maxScore: 1.482,
-      hits: results.map((doc, idx) => ({
-        _index: doc.index,
-        _id: doc.id,
-        _score: (1.5 - idx * 0.15).toFixed(2),
-        _source: doc
-      }))
-    }
-  });
 });
 
 // GET /api/postman/collection
