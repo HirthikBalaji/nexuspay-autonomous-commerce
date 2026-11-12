@@ -8,6 +8,82 @@ const router = express.Router();
 // Dynamic compute & specialized agent services catalog for autonomous RFQ discovery
 const CHANNEL3_CATALOG = [
   {
+    id: 'CH3-LAPTOP-ROG-4090',
+    name: 'ASUS ROG Strix SCAR 18 (RTX 4090 16GB, i9-14900HX, 64GB DDR5, 2TB Gen4 SSD)',
+    vendor: 'Apex Hardware Global',
+    category: 'Workstation Hardware',
+    spotPricePerHour: 0.00,
+    estimatedContractBudget: 3699.00,
+    slaGuarantee: 'Next-Day Express Dispatch, 3-Yr Comprehensive Warranty, Factory Sealed',
+    availability: 'IN STOCK (8 Units)',
+    trustScore: 99.4,
+    paypalAccepted: true,
+    specs: {
+      gpu: 'NVIDIA GeForce RTX 4090 16GB GDDR6 (175W TGP)',
+      cpu: 'Intel Core i9-14900HX (24 cores / 32 threads)',
+      ram: '64GB DDR5-5600MHz Dual-Channel',
+      storage: '2TB PCIe 4.0 NVMe M.2 SSD',
+      display: '18" QHD+ 240Hz ROG Nebula HDR Mini-LED'
+    }
+  },
+  {
+    id: 'CH3-LAPTOP-LEGION-4080',
+    name: 'Lenovo Legion Pro 7i Gen 9 (RTX 4080 12GB, i9-14900HX, 32GB RAM, 1TB SSD)',
+    vendor: 'SiliconSphere Compute',
+    category: 'Workstation Hardware',
+    spotPricePerHour: 0.00,
+    estimatedContractBudget: 2699.00,
+    slaGuarantee: '2-Day Standard Dispatch, 1-Yr Onsite Support',
+    availability: 'IN STOCK (14 Units)',
+    trustScore: 97.2,
+    paypalAccepted: true,
+    specs: {
+      gpu: 'NVIDIA GeForce RTX 4080 12GB GDDR6 (175W TGP)',
+      cpu: 'Intel Core i9-14900HX',
+      ram: '32GB DDR5-5600MHz',
+      storage: '1TB PCIe 4.0 SSD',
+      display: '16" WQXGA 240Hz IPS'
+    }
+  },
+  {
+    id: 'CH3-LAPTOP-BLADE-4090',
+    name: 'Razer Blade 16 Dual-Mode Mini-LED (RTX 4090 16GB, i9-14900HX, 32GB RAM)',
+    vendor: 'NovaTech Direct',
+    category: 'Workstation Hardware',
+    spotPricePerHour: 0.00,
+    estimatedContractBudget: 3999.00,
+    slaGuarantee: '3-Day Courier, RazerCare Coverage Available',
+    availability: 'LOW STOCK (3 Units)',
+    trustScore: 96.1,
+    paypalAccepted: true,
+    specs: {
+      gpu: 'NVIDIA GeForce RTX 4090 16GB GDDR6',
+      cpu: 'Intel Core i9-14900HX',
+      ram: '32GB DDR5',
+      storage: '2TB PCIe 4.0 SSD',
+      display: '16" Dual-Mode Mini-LED (FHD+ 240Hz / 4K 120Hz)'
+    }
+  },
+  {
+    id: 'CH3-LAPTOP-TITAN-4090',
+    name: 'MSI Titan 18 HX AI Workstation (RTX 4090 16GB, 128GB RAM, 4TB SSD)',
+    vendor: 'Aetheria Hardware Hub',
+    category: 'Workstation Hardware',
+    spotPricePerHour: 0.00,
+    estimatedContractBudget: 4899.00,
+    slaGuarantee: 'Priority Air Transit, Enterprise Global Support',
+    availability: 'IN STOCK (2 Units)',
+    trustScore: 98.8,
+    paypalAccepted: true,
+    specs: {
+      gpu: 'NVIDIA GeForce RTX 4090 16GB (Full 175W)',
+      cpu: 'Intel Core i9-14900HX',
+      ram: '128GB DDR5 (4x Slots)',
+      storage: '4TB RAID-0 Gen5 SSD',
+      display: '18" 4K 120Hz Mini-LED'
+    }
+  },
+  {
     id: 'CH3-GPU-H100-01',
     name: 'SXM5 NVIDIA H100 80GB Cluster (16x Nodes)',
     vendor: 'Aetheria Cloud & AI',

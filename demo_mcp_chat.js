@@ -1,72 +1,71 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { callOpenRouterChat, extractJsonFromLlm } from './server/llmClient.js';
-import { sendMilestonePayout, createOrder, refundCapture } from './server/paypalClient.js';
+import { runAutonomousProcurementWorkflow } from './server/agentOrchestrator.js';
 
 async function runMcpDemo(userInstruction) {
-  console.log('\n======================================================');
-  console.log('🤖 [NexusPay MCP Agent] User Command:');
-  console.log(`"${userInstruction}"`);
-  console.log('======================================================\n');
+  const prompt = userInstruction || 'procure a laptop with high gpu for best price';
 
-  const prompt = `You are an Autonomous Treasury Agent equipped with the PayPal Model Context Protocol (MCP).
-User instruction: "${userInstruction}"
+  console.log('\n================================================================');
+  console.log('🤖 [NexusPay Autonomous Agent] User Mandate:');
+  console.log(`"${prompt}"`);
+  console.log('================================================================\n');
 
-Available MCP Tools:
-- paypal_send_payout: { receiverEmail: string, amount: number, currency: string, note: string }
-- paypal_create_order: { amount: number, currency: string, description: string }
-- paypal_refund_capture: { captureId: string, amount: number, reason: string }
-
-Select the appropriate tool and respond with raw valid JSON only matching:
-{
-  "tool": "paypal_send_payout",
-  "arguments": {
-    "receiverEmail": "...",
-    "amount": 250.00,
-    "currency": "USD",
-    "note": "..."
-  },
-  "agentThought": "1 sentence explaining why this tool was chosen"
-}`;
-
-  console.log('⚡ Sending natural language instruction to OpenRouter LLM...');
+  console.log('⚡ Initializing Multi-Stage Autonomous Procurement Pipeline...');
   const startTime = Date.now();
-  const llmRes = await callOpenRouterChat({
-    messages: [
-      { role: 'system', content: 'You are an autonomous PayPal MCP Agent. Always respond with raw JSON tool invocations.' },
-      { role: 'user', content: prompt }
-    ],
-    temperature: 0.1,
-    maxTokens: 500
+  const res = await runAutonomousProcurementWorkflow({ prompt });
+
+  console.log(`\n🎉 ${res.summary}\n`);
+  console.log(`• Total Target Budget: $${res.totalBudget?.toLocaleString()} USD`);
+  console.log(`• Agreed Settlement:   $${res.agreedAmount?.toLocaleString()} USD`);
+  console.log(`• Total Savings:       +$${res.totalSavings?.toLocaleString()} USD`);
+  console.log(`• Payment Status:      ${res.paymentStatus} (100% Settled)\n`);
+
+  console.log('----------------------------------------------------------------');
+  console.log('📋 AUDITABLE STEP-BY-STEP EXECUTION TRACE:');
+  console.log('----------------------------------------------------------------\n');
+
+  res.steps.forEach((s) => {
+    console.log(`[STEP ${s.stepIndex}] ${s.title}`);
+    console.log(`Status:   ✅ ${s.status} (${s.badge})`);
+    console.log(`Summary:  ${s.summary}`);
+
+    if (s.vendorComparison) {
+      console.log('Vendor Benchmarks:');
+      s.vendorComparison.forEach((v) => {
+        const flag = v.vendor === s.selectedVendor ? '⭐ [WINNER]' : '  ';
+        console.log(`  ${flag} ${v.model} (${v.vendor}) - $${v.initialPrice?.toLocaleString()} | ${v.gpu}`);
+      });
+    }
+
+    if (s.rounds) {
+      console.log('LLM Negotiation Transcript:');
+      s.rounds.forEach((r) => {
+        console.log(`  • Round ${r.round} [${r.sender}]: "${r.message}"`);
+      });
+    }
+
+    if (s.paypalOrderId) {
+      console.log(`PayPal Order ID:   ${s.paypalOrderId} (Status: ${s.orderStatus})`);
+      console.log(`PayPal Capture ID: ${s.captureId}`);
+    }
+
+    if (s.attestation) {
+      console.log(`Serial Seal:       ${s.attestation.serialNumber}`);
+      console.log(`AirWayBill:        ${s.attestation.carrierTracking}`);
+      console.log(`Merkle Root:       ${s.attestation.merkleRoot}`);
+    }
+
+    if (s.payoutBatchId) {
+      console.log(`Payout Batch ID:   ${s.payoutBatchId} (Status: ${s.payoutStatus})`);
+      console.log(`Disbursed To:      ${s.receiverEmail}`);
+      console.log(`PayPal Link:       ${s.paypalResourceUrl}`);
+    }
+    console.log('');
   });
 
-  console.log(`🧠 [LLM Decision via ${llmRes.model} in ${Date.now() - startTime}ms]:`);
-  const parsed = extractJsonFromLlm(llmRes.content);
-  console.log(JSON.stringify(parsed, null, 2));
-
-  if (!parsed || !parsed.tool) {
-    console.error('❌ Failed to parse MCP tool call from LLM response.');
-    return;
-  }
-
-  console.log(`\n💳 Executing [${parsed.tool}] on live PayPal Sandbox rails...`);
-  if (parsed.tool === 'paypal_send_payout') {
-    const payout = await sendMilestonePayout({
-      senderBatchId: 'MCP_CLI_' + Date.now(),
-      receiverEmail: parsed.arguments.receiverEmail || 'sb-47udt4751600779@business.example.com',
-      amount: parsed.arguments.amount,
-      currency: parsed.arguments.currency || 'USD',
-      note: parsed.arguments.note || 'Autonomous MCP Milestone Payout'
-    });
-
-    console.log('\n✅ [PAYPAL PAYOUT SUCCESS]');
-    console.log(`• Batch ID: ${payout.batch_header?.payout_batch_id}`);
-    console.log(`• Status:   ${payout.batch_header?.batch_status}`);
-    console.log(`• Amount:   $${parsed.arguments.amount} ${parsed.arguments.currency || 'USD'}`);
-    console.log(`• Receiver: ${parsed.arguments.receiverEmail || 'sb-47udt4751600779@business.example.com'}`);
-    console.log(`• PayPal Resource Link: https://api.sandbox.paypal.com/v1/payments/payouts/${payout.batch_header?.payout_batch_id}`);
-  }
+  console.log(`⏱️ Total Pipeline Execution Latency: ${Date.now() - startTime}ms`);
+  console.log('================================================================\n');
 }
 
-// Test with a natural language command:
-runMcpDemo('Milestone 1 for the 16x H100 cluster is cryptographically verified by Argus-7. Disburse a $250.00 USD milestone release to sb-47udt4751600779@business.example.com via PayPal Payouts.');
+const arg = process.argv.slice(2).join(' ');
+runMcpDemo(arg);
