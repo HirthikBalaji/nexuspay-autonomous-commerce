@@ -7,7 +7,7 @@
   },
   "treasury": {
     "currency": "USD",
-    "totalEscrowLocked": 25724.15,
+    "totalEscrowLocked": 29956.15,
     "totalSettledVolume": 7315.5,
     "disputedVolume": 3200,
     "liquidVaultBalance": 84520,
@@ -17,6 +17,384 @@
     "averageSettlementLatency": "1.4s"
   },
   "contracts": [
+    {
+      "contractId": "NP-CTR-54CEAB17",
+      "scenarioId": "gpu_procurement",
+      "title": "Autonomous H100 GPU Cluster Procurement",
+      "agreedAmount": 2208,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Atlas assesses $2400 budget ceiling, proposes $2040 initial tranche with milestone escrow for H100 cluster",
+          "message": "Atlas RFQ: $2040 initial payment, $960 milestone, 30-day escrow for H100 GPU cluster procurement",
+          "proposal": {
+            "budget": 2040,
+            "milestones": 3,
+            "sla": "99.9% uptime, <15ms peer latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T15:33:19.083Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Hermes calculates 12% margin, confirms 128 H100 nodes capacity, meets 99.9% uptime SLA",
+          "message": "Hermes counter: $2304 total, 12% margin, SLA 99.9% uptime, <15ms latency guaranteed",
+          "proposal": {
+            "budget": 2304,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T15:33:20.083Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Atlas invokes Themis AI Arbiter dispute covenants, seeks final agreement at $2208 with PayPal escrow",
+          "message": "Atlas final: $2208 agreement, binding PayPal escrow, Themis covenants satisfied, H100 cluster confirmed",
+          "proposal": {
+            "budget": 2208,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T15:33:21.083Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Hermes cryptographically accepts $2208, triggers PayPal Orders v2, commits full capacity for procurement",
+          "message": "Hermes confirms: $2208 accepted, PayPal Orders v2 created, capacity reserved, SLA binding",
+          "proposal": {
+            "budget": 2208,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T15:33:22.083Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "9LR558574L232320G",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794497605750",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2208.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-47udt4751600779@business.example.com",
+              "merchant_id": "ZUZNTPMDEYDNU",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-54CEAB17]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: Autonomous H100 GPU Cluster Procurement [NP-CTR-54CEAB17]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2208.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T15:33:27Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/9LR558574L232320G",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=9LR558574L232320G",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/9LR558574L232320G",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/9LR558574L232320G/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 4489,
+        "tokens": 1208
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Cluster Provisioning & Environment Benchmark",
+          "share": 0.25,
+          "proofType": "CUDA_BENCHMARK_HASH",
+          "expectedProof": "pass: 16x SXM5 H100 nodes initialized, 3.2Tbps NVLink verified",
+          "milestoneIndex": 1,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Distributed Training Job Execution (48h)",
+          "share": 0.5,
+          "proofType": "WEIGHT_CHECKPOINT_HASH",
+          "expectedProof": "checkpoint_epoch_10_loss_0.142_sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "milestoneIndex": 2,
+          "amount": 1104,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Final Latency & SLA Validation Signoff",
+          "share": 0.25,
+          "proofType": "TELEMETRY_LOG_AUDIT",
+          "expectedProof": "100% SLA compliance, 0 dropped frames, cluster deprovisioned cleanly",
+          "milestoneIndex": 3,
+          "amount": 552,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T15:33:26.950Z"
+    },
+    {
+      "contractId": "NP-CTR-AC97F00A",
+      "scenarioId": "gpu_procurement",
+      "title": "SXM5 NVIDIA H100 80GB Cluster (16x Nodes)",
+      "agreedAmount": 2024,
+      "currency": "USD",
+      "buyer": {
+        "id": "AGENT_ATLAS_01",
+        "name": "Atlas (NovaCorp Procurement)",
+        "wallet": "atlas-treasury@novacorp.ai",
+        "maxBudget": 2400,
+        "slaRequirement": "99.9% uptime, <15ms peer latency"
+      },
+      "supplier": {
+        "id": "AGENT_HERMES_09",
+        "name": "Hermes (Aetheria Compute Nodes)",
+        "wallet": "billing@aetheria-cloud.ai",
+        "reputationScore": 98.4
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "BROADCAST_RFQ",
+          "thought": "Assessing budget ceiling $2200, calculating 16x H100 cluster cost, proposing initial tranche to meet SLA",
+          "message": "RFQ: 16x SXM5 H100 80GB Cluster. Initial tranche $1870. Full payment upon delivery.",
+          "proposal": {
+            "budget": 1870,
+            "milestones": 3,
+            "sla": "99.95% uptime, <15ms NVLink peer latency",
+            "escrowHold": "100% Locked in PayPal Vault"
+          },
+          "timestamp": "2026-11-12T13:22:11.567Z"
+        },
+        {
+          "round": 2,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "COUNTER_PROPOSAL",
+          "thought": "Calculating margin, verifying capacity for 16 nodes, confirming SLA compliance <15ms NVLink",
+          "message": "Counter: $2112. SLA 99.95% uptime, <15ms NVLink. Binding terms included.",
+          "proposal": {
+            "budget": 2112,
+            "milestones": 3,
+            "sla": "99.85% guaranteed with automated telemetry",
+            "escrowHold": "Standard Milestone Release"
+          },
+          "timestamp": "2026-11-12T13:22:12.567Z"
+        },
+        {
+          "round": 3,
+          "sender": "Atlas (NovaCorp Procurement)",
+          "senderRole": "BUYER_AGENT",
+          "action": "POLICY_CONVERGENCE",
+          "thought": "Converging on $2024 compromise, invoking Themis AI Arbiter dispute covenants for final agreement",
+          "message": "Final: $2024. PayPal escrow terms binding. Both parties commit.",
+          "proposal": {
+            "budget": 2024,
+            "milestones": 3,
+            "arbitrationClause": "Themis AI Arbiter Binding Escrow Enforcement",
+            "penaltyRate": "15% tranche deduction per 0.1% SLA breach"
+          },
+          "timestamp": "2026-11-12T13:22:13.567Z"
+        },
+        {
+          "round": 4,
+          "sender": "Hermes (Aetheria Compute Nodes)",
+          "senderRole": "SUPPLIER_AGENT",
+          "action": "ACCEPT_CONTRACT",
+          "thought": "Cryptographic acceptance of $2024, creating PayPal Orders v2, confirming capacity commitment",
+          "message": "Confirmed. PayPal Orders v2 created. Capacity committed. SLA binding.",
+          "proposal": {
+            "budget": 2024,
+            "status": "SIGNED_BY_BOTH_PARTIES"
+          },
+          "timestamp": "2026-11-12T13:22:14.567Z"
+        }
+      ],
+      "paypalOrder": {
+        "id": "7CW30454JJ267833B",
+        "intent": "CAPTURE",
+        "status": "CREATED",
+        "purchase_units": [
+          {
+            "reference_id": "PU_1794489736443",
+            "amount": {
+              "currency_code": "USD",
+              "value": "2024.00",
+              "breakdown": {
+                "item_total": {
+                  "currency_code": "USD",
+                  "value": "2024.00"
+                }
+              }
+            },
+            "payee": {
+              "email_address": "sb-ub3bd53174356@business.example.com",
+              "merchant_id": "5BSJMGX85KRBE",
+              "display_data": {
+                "brand_name": "NexusPay Autonomous Clearinghouse"
+              }
+            },
+            "description": "NexusPay Autonomous Escrow: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) [NP-CTR-AC97F00A]",
+            "custom_id": "MANDATE_AGENT_ATLAS_01_AGENT_HERMES_09",
+            "items": [
+              {
+                "name": "NexusPay Autonomous Escrow: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) [NP-CTR-AC97F00A]",
+                "unit_amount": {
+                  "currency_code": "USD",
+                  "value": "2024.00"
+                },
+                "quantity": "1",
+                "category": "DIGITAL_GOODS"
+              }
+            ]
+          }
+        ],
+        "create_time": "2026-11-12T13:22:18Z",
+        "links": [
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/7CW30454JJ267833B",
+            "rel": "self",
+            "method": "GET"
+          },
+          {
+            "href": "https://www.sandbox.paypal.com/checkoutnow?token=7CW30454JJ267833B",
+            "rel": "approve",
+            "method": "GET"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/7CW30454JJ267833B",
+            "rel": "update",
+            "method": "PATCH"
+          },
+          {
+            "href": "https://api.sandbox.paypal.com/v2/checkout/orders/7CW30454JJ267833B/capture",
+            "rel": "capture",
+            "method": "POST"
+          }
+        ]
+      },
+      "llmTelemetry": {
+        "isRealLlm": true,
+        "provider": "OpenRouter Free AI Rails",
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "latencyMs": 6893,
+        "tokens": 1378
+      },
+      "deliverables": [
+        {
+          "id": "M1",
+          "name": "Phase 1: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) - Environment Setup & Verification",
+          "share": 0.25,
+          "proofType": "ENVIRONMENT_BENCHMARK_HASH",
+          "expectedProof": "Environment verified: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) initialized with cryptographic handshake.",
+          "amount": 506,
+          "milestoneIndex": 1,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M2",
+          "name": "Phase 2: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) - Core Execution & Performance SLA",
+          "share": 0.5,
+          "proofType": "EXECUTION_TELEMETRY_LOG",
+          "expectedProof": "Execution log validated: Core deliverables generated and benchmarked against SLA thresholds.",
+          "amount": 1012,
+          "milestoneIndex": 2,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        },
+        {
+          "id": "M3",
+          "name": "Phase 3: SXM5 NVIDIA H100 80GB Cluster (16x Nodes) - Final Validation & Delivery Signoff",
+          "share": 0.25,
+          "proofType": "MERKLE_ROOT_SIGNOFF",
+          "expectedProof": "Final cryptographic signoff verified by NovaCorp Verifier Agent.",
+          "amount": 506,
+          "milestoneIndex": 3,
+          "status": "LOCKED",
+          "payoutDetails": null,
+          "verificationProof": null
+        }
+      ],
+      "createdAt": "2026-11-12T13:22:17.788Z"
+    },
     {
       "contractId": "NP-CTR-006B5CA9",
       "scenarioId": "gpu_procurement",
@@ -1233,6 +1611,40 @@
   ],
   "transactions": [
     {
+      "id": "TXN-5670C2-PP",
+      "timestamp": "2026-11-12T15:33:26.955Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "High-Performance Cloud Infrastructure",
+      "amount": 2208,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "9LR558574L232320G",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
+    {
+      "id": "TXN-FF65E3-PP",
+      "timestamp": "2026-11-12T13:22:17.793Z",
+      "buyerAgent": "Atlas (NovaCorp Procurement)",
+      "supplierAgent": "Hermes (Aetheria Compute Nodes)",
+      "category": "Custom Autonomous RFP",
+      "amount": 2024,
+      "currency": "USD",
+      "milestoneStage": "Escrow Locked",
+      "milestoneProgress": 0,
+      "riskScore": 10,
+      "slaHealth": 99.8,
+      "paypalReference": "7CW30454JJ267833B",
+      "agentStatus": "ACTIVE",
+      "settlementRail": "PayPal Orders v2",
+      "llmEngine": "liquid/lfm-2.5-2.6b:free"
+    },
+    {
       "id": "TXN-D43EF6-PP",
       "timestamp": "2026-11-12T12:56:36.472Z",
       "buyerAgent": "Atlas (NovaCorp Procurement)",
@@ -1526,6 +1938,30 @@
     }
   ],
   "webhooks": [
+    {
+      "id": "WH-EVT-LMIEXA",
+      "event_type": "PAYMENT.PAYOUTSBATCH.SUCCESS",
+      "resource_type": "payouts",
+      "summary": "Automated milestone payout of $8685.00 released to sb-47udt4751600779@business.example.com",
+      "create_time": "2026-11-12T15:34:32.208Z",
+      "status": "PROCESSED"
+    },
+    {
+      "id": "WH-EVT-WOY4BI",
+      "event_type": "PAYMENT.PAYOUTSBATCH.SUCCESS",
+      "resource_type": "payouts",
+      "summary": "Automated milestone payout of $50.00 released to sb-47udt4751600779@business.example.com",
+      "create_time": "2026-11-12T15:34:31.702Z",
+      "status": "PROCESSED"
+    },
+    {
+      "id": "WH-EVT-P415MU",
+      "event_type": "CHECKOUT.ORDER.CREATED",
+      "resource_type": "checkout-order",
+      "summary": "Order 6AE27200JC382714T created for $17370.00 INR",
+      "create_time": "2026-11-12T15:34:31.200Z",
+      "status": "PROCESSED"
+    },
     {
       "id": "WH-EVT-8X0RBB",
       "event_type": "CHECKOUT.ORDER.CREATED",
